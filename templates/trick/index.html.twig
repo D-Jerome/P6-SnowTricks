@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{name}}{% endblock %}
+{% block title %}{{trick.name}}{% endblock %}
 
 {% block body %}
 <style>
@@ -9,8 +9,8 @@
 </style>
 <div class="container col-8"></div>
     <div class="example-wrapper">
-        <h1>SnowBoard Trick {{ name }}! ✅</h1>
-        {{ description }}
+        <h1>SnowBoard Trick {{ trick.name }}! ✅</h1>
+        {{ trick.description }}
         <img src="https://via.placeholder.com/200x200" alt="trick picture" class="">
     </div>
 </div>
