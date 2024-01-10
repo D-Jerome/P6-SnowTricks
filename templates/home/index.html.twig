@@ -16,6 +16,7 @@
         <h1>SnowBoard Trick {{ trick.name }}! ✅</h1>
         {{ trick.description }}
         <img src="https://via.placeholder.com/200x200" alt="trick picture" class="">
+        <a href="{{ path('app_trick', {'slug' : trick.slug }) }}" class="btn btn-primary">Lire la suite</a>
     </div>
 
 </div>
