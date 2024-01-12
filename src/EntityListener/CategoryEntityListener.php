@@ -16,7 +16,8 @@ class CategoryEntityListener
 {
     public function __construct(
         private SluggerInterface $slugger,
-    ) {}
+    ) {
+    }
 
     public function prePersist(Category $category, LifecycleEventArgs $event): void
     {
