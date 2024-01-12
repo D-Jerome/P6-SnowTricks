@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Trick;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -30,6 +31,13 @@ class TrickFixtures extends Fixture
                     ->setCategory($category)
                 ;
                 $manager->persist($trick);
+                for ($h = 0; $h < 5; ++$h) {
+                    $comment = new Comment();
+                    $comment->setContent($faker->sentence(8, true))
+                        ->setTrick($trick)
+                    ;
+                    $manager->persist($comment);
+                }
             }
         }
 
