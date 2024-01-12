@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Trick;
 use App\Form\TrickType;
+use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,16 +17,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrickController extends AbstractController
 {
     #[Route('/trick/{slug<((\w+)-){0,}(\w+)>}/show', name: 'app_trick')]
-    public function showTrick(string $slug, TrickRepository $trick): Response
+    public function showTrick(string $slug, Trick $trick, TrickRepository $trickRepository): Response
     {
+        $comments = $trick->getComments();
+
         return $this->render('trick/index.html.twig', [
-            'trick'            => $trick->findOneBySlug($slug),
+            'trick'            => $trickRepository->findOneBySlug($slug),
         ]);
     }
 
     #[Route('/trick/{slug<((\w+)-){0,}(\w+)>}/edit', name: 'app_trick_edit')]
     #[Route('/trick/add', name: 'app_trick_add')]
-    public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager): Response
+    public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, CommentRepository $comment): Response
     {
         if (!$trick) {
             $trick = new Trick();
