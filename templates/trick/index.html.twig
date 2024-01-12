@@ -9,7 +9,7 @@
 		<img src="https://via.placeholder.com/500x300" alt="trick picture " class=" img-fluid w-100">
 		<h1 class="position-absolute top-50 start-50 translate-middle">{{ trick.name }}</h1>
 	</div>
-	<div class="container col-12 ">media
+	<div class="container col-10 border d-flex justify-content-around flex-wrap">
 		<img src="https://via.placeholder.com/200x200" alt="trick picture" class="m-1">
 		<img src="https://via.placeholder.com/200x200" alt="trick picture" class="m-1">
 		<img src="https://via.placeholder.com/200x200" alt="trick picture" class="m-1">
@@ -17,12 +17,33 @@
 
 
 	</div>
-</div>
-<div class="container col-6 ">
-	<span class="badge rounded-pill text-bg-primary">{{ trick.category.name}}</span>
-	<div class="container mt-3">
-		{{ trick.description }}
 
-
+	<div class="container col-6 ">
+		<span class="badge rounded-pill text-bg-primary">{{ trick.category.name}}</span>
+		<div class="container mt-3">
+			{{ trick.description }}
+		</div>
 	</div>
-</div>{% endblock %}
+	<div class="container col-6 border">
+		Commentaires
+		{% if comments %}
+			{{ form_start(formComment) }}
+			{{ form_row(formComment.content, {
+                'label' : 'Ajouter une commentaire',
+                'attr'  : {'placeholder' : 'Entrer votre commentaire'},
+        } 
+        ) }}
+			{{ form_end(formComment)}}
+		{% endif %}
+		{% for comment in comments %}
+			<div class="card">
+				<div class="card-title m-1 bg-primary">Publié le
+					{{ comment.createdAt | date("d/m/Y à h:i")}}</div>
+				<div class="card-body">
+
+					{{comment.content}}
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}
