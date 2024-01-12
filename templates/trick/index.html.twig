@@ -1,17 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{trick.name}}{% endblock %}
+{% block title %}
+	{{trick.name}}
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-<div class="container col-8"></div>
-    <div class="example-wrapper">
-        <h1>SnowBoard Trick {{ trick.name }}! ✅</h1>
-        {{ trick.description }}
-        <img src="https://via.placeholder.com/200x200" alt="trick picture" class="">
-    </div>
+	<div class="container col-10 position-relative">
+		<img src="https://via.placeholder.com/500x300" alt="trick picture " class=" img-fluid w-100">
+		<h1 class="position-absolute top-50 start-50 translate-middle">{{ trick.name }}</h1>
+	</div>
+	<div class="container col-12 ">media
+		<img src="https://via.placeholder.com/200x200" alt="trick picture" class="m-1">
+		<img src="https://via.placeholder.com/200x200" alt="trick picture" class="m-1">
+		<img src="https://via.placeholder.com/200x200" alt="trick picture" class="m-1">
+		<img src="https://via.placeholder.com/200x200" alt="trick picture" class="m-1">
+
+
+	</div>
 </div>
-{% endblock %}
+<div class="container col-6 ">
+	<span class="badge rounded-pill text-bg-primary">{{ trick.category.name}}</span>
+	<div class="container mt-3">
+		{{ trick.description }}
+
+
+	</div>
+</div>{% endblock %}
