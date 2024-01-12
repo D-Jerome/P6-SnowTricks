@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Hello CategoryController!
+{% endblock %}
+
+{% block body %}
+	<h1>Création d'une catégorie</h1>
+	{{ form_start(formCategory)}}
+
+	{{ form_row(formCategory.name, {
+                'label' : 'Nom de la catégorie',
+                'attr'  : {'placeholder' : 'Entrer la nouvelle Catégorie'},
+        } 
+        ) }}
+	<div class="container">
+		<button type="submit" class="btn btn-success">
+		{% if category.id %}
+			Modifier la catégorie
+		{% else %}
+			Ajouter la catégorie
+		{% endif %}
+		</button>
+	</div>
+	{{ form_end(formCategory) }}
+{% endblock %}
