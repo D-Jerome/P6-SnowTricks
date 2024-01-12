@@ -19,7 +19,6 @@ class CategoryController extends AbstractController
     public function showCategories(CategoryRepository $category): Response
     {
         return $this->render('category/index.html.twig', [
-            'controller_name' => 'CategoryController',
             'categories'      => $category->findAll(),
         ]);
     }
@@ -28,7 +27,6 @@ class CategoryController extends AbstractController
     public function showCategory(int $id, CategoryRepository $category): Response
     {
         return $this->render('category/index.html.twig', [
-            'controller_name' => 'CategoryController',
             'category'        => $category,
         ]);
     }
