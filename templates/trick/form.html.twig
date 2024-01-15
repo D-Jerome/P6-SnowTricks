@@ -12,33 +12,68 @@
 			Ajouter un Trick
 		{% endif %}
 	</h1>
-	{{ form_start(formTrick) }}
+	<!-- Start Create Trick -->
+	<div class="col-lg-12">
+		<div class="card card-small mb-4">
+			<div class="card-header border-bottom">
+				<h6 class="m-0">Ajouter votre trick</h6>
+			</div>
+		</div>
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item p-3">
+				<div class="row">
+					<div class="col">
+						{% form_theme formTrick _self %}
+						{{ form_start(formTrick) }}
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								{{ form_row(formTrick.name) }}
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
 
-	{{ form_row(formTrick.name, {
-                'label' : 'Nom de la figure',
-                'attr'  : {'placeholder' : 'Entrer la nouvelle figure'},
-        } 
-        ) }}
-
-	{{ form_row(formTrick.description, {
-                'label' : 'Description',
-                'attr'  : {'placeholder' : 'Entrer la description de la figure'},
-        } 
-        ) }}
-
-	{{ form_row(formTrick.category, {
-                'label' : 'Categorie',
-                'attr'  : {'placeholder' : 'Selectionner la catégorie'},
-        } 
-        ) }}
-	<div class="container">
-		<button type="submit" class="btn btn-success">
-			{% if trick.id %}
-				Modifier la Figure
-			{% else %}
-				Ajouter un Trick
-			{% endif %}
-		</button>
-	</div>
-	{{ form_end(formTrick) }}
-{% endblock %}
+						<div class="form-group col-md-6">
+							{{ form_row(formTrick.category) }}
+						</div>
+					</div>
+					<div class="form-group">
+						{{ form_row(formTrick.description) }}
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6 text-center">
+							<p>Cliquez pour ajouter un media</p>
+							{{ form_widget(formTrick.medias) }}
+							<input type="hidden" id="image-counter" value="0">
+							<div class="form-group mt-2">
+								<button type="button" class="btn btn-outline-info" id="add-image">Ajouter une image</button>
+								<span class="counter-image text-danger"></span>
+							</div>
+						</div>
+						{# <div class="form-group col-md-6 text-center">
+																													<p>Cliquez pour ajouter une vidéo (<u>Youtube uniquement</u>)</p>
+																													{{ form_widget(formTrick.videos) }}
+																													<input type="hidden" id="video-counter" value="0">
+																													<div class="form-group mt-2">
+																														<button type="button" class="btn btn-outline-info" id="add-video">Ajouter une vidéo</button>
+																														<span class="counter-video text-danger"></span>
+																													</div>
+																												</div> #}
+					</div>
+					<div class="form-group mt-4 text-center">
+						<button type="submit" class="btn btn-success">Ajouter le trick</button>
+					</div>
+					{{ form_end(formTrick) }}</div>
+			</li>
+		</div>
+	</li>
+</ul></div></div><!-- End Create Trick -->{% endblock %}{% block _trick_medias_entry_widget %}<div class="row block-image" id="block_{{id}}"><div class="col-md-8 offset-md-2">
+{% if formTrick.vars.data.name is defined %}
+	<img src="/upload/{{formTrick.vars.data.name}}" alt="trick-image-{{formTrick.vars.name}}" class="img-trick">
+{% endif %}</div><div class="col-md-6 offset-md-2">
+<div class="form-group">{# {{ form_errors(formTrick.medias) }} #}
+	{# {{ form_widget(formTrick.medias) }} #}
+</div></div><div class="col-md-2">
+<button type="button" data-action="delete" data-target="#block_{{id}}" class="btn btn-secondary btn-trick">
+	<i class="material-icons text-danger">clear</i>
+</button></div><div class="col-md-1"></div></div>{% endblock %}
