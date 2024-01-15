@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Media;
 use App\Entity\Trick;
 use App\Form\CommentType;
 use App\Form\TrickType;
@@ -59,6 +60,19 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $images = $form->get('image')->getData();
+            dd($images);
+            foreach ($images as $image) {
+                
+                // Save image in folder
+                $file = $pictureService->add($image);
+
+                $image = new Media();
+                $image->setDescription($image->getClientOriginalName());
+                $image->setStorage($file);
+
+            }
+            
             $manager->persist($trick);
             $manager->flush();
 
