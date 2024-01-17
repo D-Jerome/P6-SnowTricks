@@ -49,7 +49,7 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/profil, roles: ROLE_USER }
         - { path: ^/category, roles: ROLE_USER }
-        - { path: ^/media, roles: ROLE_USER }
+        - { path: ^/user, roles: ROLE_USER }
     # role_hierarchy:
     #     ROLE_USER    
 

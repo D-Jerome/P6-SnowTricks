@@ -44,7 +44,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
     #[ORM\Column]
@@ -62,7 +62,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->active = false;
-        $this->avatar = 'ttuutuu';
+        $this->avatar = '/uploads/user.png';
+
     }
 
     public function getId(): ?int
