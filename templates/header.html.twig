@@ -1,27 +1,42 @@
+<nav class="navbar navbar-expand-lg bg-dark sticky-top" data-bs-theme="dark">
+	<div class="container">
+		<a class="navbar-brand" href="/">SnowTricks</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse " id="navbarColor02">
+			<ul class="navbar-nav w-100 justify-content-end me-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('app_home')}}">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('app_home')}}#tricks">Tricks</a>
+				</li>
 
-	<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-		<div class="container">
-			<a class="navbar-brand" href="/">SnowTricks</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse " id="navbarColor02">
-				<ul class="navbar-nav w-100 justify-content-end me-auto">
+				{% if not app.user %}
 					<li class="nav-item">
-						<a class="nav-link" href="{{ path('app_home')}}">Home</a>
+						<a class="nav-link" href="{{ path('app_security_signup') }}">S'inscrire</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="{{ path('app_categories') }}">Groupe</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Sign in</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Sign up</a>
+						<a class="nav-link" href="{{ path('app_security_login') }}">Connexion</a>
 					</li>
 
-				</ul>
-			</div>
+				{% else %}
+
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle btn btn-secondary bg-primary bg-gradient px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.username }}</a>
+						<div class="dropdown-menu" style="">
+							<a class="dropdown-item" href="{{ path('app_user_profile') }}">Profil</a>
+							<a class="dropdown-item" href="{{ path('app_trick_add') }}">Ajouter un Trick</a>
+							<a class="dropdown-item" href="{{ path('app_categories') }}">Groupe</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item bg-danger" href="{{ path('app_security_logout') }}">Déconnexion</a>
+						</div>
+					</li>
+
+				{% endif %}
+
+			</ul>
 		</div>
-	</nav>
-
+	</div>
+</nav>
