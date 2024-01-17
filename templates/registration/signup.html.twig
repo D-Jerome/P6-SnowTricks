@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register
+{% endblock %}
+
+{% block body %}
+	<h1 class="text-center">Formulaire d'inscription</h1>
+	<section class="container">
+		<div class="row">
+			<div class="col">
+				{{ form_errors(registrationForm) }}
+
+				{{ form_start(registrationForm) }}
+				{{ form_row(registrationForm.username , {'label': "Nom d'utilisateur", 'attr' :{'placeholder' : ''}}) }}
+				{{ form_row(registrationForm.email, {'label': "Adresse Email", 'attr' :{'placeholder' : 'adresse Email john@doe.com.....'}}) }}
+				{{ form_row(registrationForm.password, {'label' : 'Entrer votre mot de passe'}) }}
+				{{ form_row(registrationForm.confirmPassword, {'label' : 'Confirmer votre mot de passe'}) }}
+				<fieldset>
+					<legend class="text-center">Avatar</legend>
+					{# {{ form_row(form.avatar, {'label': "Sélectionner votre photo de profil"}) }} #}
+
+				</fieldset>
+				{{ form_row(registrationForm.rgpdTerms) }}
+
+
+				<button type="submit" class="btn btn-success">S'enregistrer</button>
+				{{ form_end(registrationForm) }}
+			</div>
+		</div>
+	</section>
+{% endblock %}

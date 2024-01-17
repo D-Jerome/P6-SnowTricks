@@ -14,7 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity('slug')]
+#[UniqueEntity(
+    fields: ['slug'],
+    message: 'cette catégorie existe déjà',
+)]
 class Category
 {
     #[ORM\Id]
@@ -23,7 +26,7 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(min: 8)]
+    #[Assert\Length(min: 4)]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Trick::class)]

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SnowTricks - Connexion
+{% endblock %}
+
+
+{% block body %}
+	<section class="container">
+		<div class="row">
+			<div class="col">
+				<form action="{{ path('app_security_login') }}" method="post">
+					<div id="form">
+						{% if error %}
+							<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+						{% endif %}
+
+						{% if app.user %}
+							<div class="mb-3">
+								Déjà Connecter comme {{ app.user.userIdentifier }},
+								<a href="{{ path('app_logout') }}">Me déconnecter</a>
+							</div>
+						{% endif %}
+
+						<h1 class="text-center">Connexion</h1>
+						<div>
+							<label for="inputEmail">Email</label>
+							<input type="email" class="form-control" value="{{ last_username }}" placeholder="Adresse email" id="inputEmail" name="email" required autofocus >
+						</div>
+						<div>
+							<label for="inputPassword">Mot de passe</label>
+							<input type="password" class="form-control" placeholder="Mot de passe" id=inputPassword" name="password"  required>
+						</div>
+						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+					</div>
+					<button type="submit" class="btn btn-primary mt-2">Me connecter</button>
+					{# <a href="{{ path('app_forgot_password_request')}}" class="btn btn-reset">Reset your password</a> #}
+
+				</form>
+
+
+			</div>
+		</div>
+
+
+	</section>
+
+{% endblock %}
