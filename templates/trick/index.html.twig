@@ -18,13 +18,13 @@
 
 	</div>
 
-	<div class="container col-6 ">
+	<div class="container col-10 ">
 		<span class="badge rounded-pill text-bg-primary">{{ trick.category.name}}</span>
 		<div class="container border border mt-3">
 			{{ trick.description }}
 		</div>
 	</div>
-	<div class="container col-6 border">
+	<div class="container col-8 border">
 		<h5 class="text-center my-3 p-3 rounded bg-dark">Commentaires</h5>
 		{% if app.user %}
 			{{ form_start(formComment) }}
@@ -35,17 +35,25 @@
         ) }}
 			{{ form_end(formComment)}}
 		{% else %}
-			<div class="text-center">
-			<h6>Merci de vous connecter pour laisser un commentaire.</h6>
-			<a href="{{ path('app_security_login') }}" class="btn btn-primary">Connexion</a>
+			<div class="text-center my-3 p-3">
+				<h6>Merci de vous connecter pour laisser un commentaire.</h6>
+				<a href="{{ path('app_security_login') }}" class="btn btn-primary">Connexion</a>
 			</div>
 		{% endif %}
 
 		{% for comment in comments %}
-			<div class="card">
-				<div class="card-title m-1 bg-primary">Publié le
-					{{ comment.createdAt | date("d/m/Y à h:i")}} par {{ comment.user.username }}</div>
-				<div class="card-body">
+			<div class="card border-primary">
+				<div class="card-header row d-flex">
+					<div class="col-3 col">
+						<img src="{{ comment.user.avatar }}" class="img-fluid">
+						<p class="text-center">{{ comment.user.username }}</p>
+					</div>
+
+					<div class="col-8 m-1 card-header ">Le
+						{{ comment.createdAt | date("d/m/Y à h:i")}}
+					</div>
+				</div>
+				<div class="card-text">
 
 					{{comment.content}}
 				</div>
@@ -53,28 +61,28 @@
 		{% endfor %}
 	</div>
 	<div>
-  <ul class="pagination pagination-sm">
-    <li class="page-item disabled">
-      <a class="page-link" href="#">&laquo;</a>
-    </li>
-    <li class="page-item active">
-      <a class="page-link" href="#">1</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#">2</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#">3</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#">4</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#">5</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#">&raquo;</a>
-    </li>
-  </ul>
-</div>
+		<ul class="pagination pagination-sm">
+			<li class="page-item disabled">
+				<a class="page-link" href="#">&laquo;</a>
+			</li>
+			<li class="page-item active">
+				<a class="page-link" href="#">1</a>
+			</li>
+			<li class="page-item">
+				<a class="page-link" href="#">2</a>
+			</li>
+			<li class="page-item">
+				<a class="page-link" href="#">3</a>
+			</li>
+			<li class="page-item">
+				<a class="page-link" href="#">4</a>
+			</li>
+			<li class="page-item">
+				<a class="page-link" href="#">5</a>
+			</li>
+			<li class="page-item">
+				<a class="page-link" href="#">&raquo;</a>
+			</li>
+		</ul>
+	</div>
 {% endblock %}
