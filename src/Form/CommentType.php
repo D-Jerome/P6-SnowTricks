@@ -18,7 +18,7 @@ class CommentType extends AbstractType
             ->add('content')
             ->add('save', SubmitType::class, [
                 'label' => 'Laisser un commentaire',
-                ])
+            ])
         ;
     }
 
@@ -28,5 +28,4 @@ class CommentType extends AbstractType
             'data_class' => Comment::class,
         ]);
     }
-
 }

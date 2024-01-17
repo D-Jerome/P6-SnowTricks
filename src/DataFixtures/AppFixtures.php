@@ -17,8 +17,6 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-        
-        
         for ($i = 0; $i < 5; ++$i) {
             $category = new Category();
             $category->setName($faker->sentence(3));

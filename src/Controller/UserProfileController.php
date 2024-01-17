@@ -28,13 +28,11 @@ class UserProfileController extends AbstractController
         $formPassword->handleRequest($request);
         $formAvatar->handleRequest($request);
 
-
-
         return $this->render('user_profile/show.html.twig', [
-            'user' => $user,
-            'formProfile' => $formProfile->createView(),
+            'user'         => $user,
+            'formProfile'  => $formProfile->createView(),
             'formPassword' => $formPassword->createView(),
-            'formAvatar' => $formAvatar->createView(),
+            'formAvatar'   => $formAvatar->createView(),
         ]);
     }
 }

@@ -34,7 +34,7 @@ class TrickController extends AbstractController
             $comment->setTrick($trick);
             $comment->setUser($this->getUser());
             $manager->persist($comment);
-            
+
             $manager->flush();
 
             return $this->redirectToRoute('app_trick', ['slug' => $trick->getSlug()]);
@@ -51,15 +51,13 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager): Response
     {
-        
-        
         $this->denyAccessUnlessGranted('ROLE_USER');
-        
+
         if (!$trick) {
             $trick = new Trick();
             $trick->setUser($this->getUser());
-        }else{
-            $this->denyAccessUnlessGranted('TRICK_EDIT', $trick);  
+        } else {
+            $this->denyAccessUnlessGranted('TRICK_EDIT', $trick);
         }
 
         $form = $this->createForm(TrickType::class, $trick);

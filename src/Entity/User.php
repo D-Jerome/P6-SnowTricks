@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(
-    fields: ["email"],
+    fields: ['email'],
     message: 'Email déjà relié à un compte utilisateur'
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -63,7 +63,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
         $this->active = false;
         $this->avatar = '/uploads/user.png';
-
     }
 
     public function getId(): ?int
@@ -220,7 +219,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return ['ROLE_USER'];
     }
 
-    public function eraseCredentials(): void {}
+    public function eraseCredentials(): void
+    {
+    }
 
     public function getUserIdentifier(): string
     {

@@ -24,7 +24,7 @@ class UserAvatarType extends AbstractType
                 // every time you edit the Product details
                 'required'   => false,
                 'data_class' => null,
-                'mapped' => false,
+                'mapped'     => false,
                 // unmapped fields can't define their validation using attributes
                 // in the associated entity, so you can use the PHP constraint classes
                 'constraints' => [
@@ -45,8 +45,8 @@ class UserAvatarType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
-            'user' => User::class,
+            'data_class'      => User::class,
+            'user'            => User::class,
             'csrf_field_name' => '_token',
         ]);
     }
