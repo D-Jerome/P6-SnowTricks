@@ -34,13 +34,6 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            // /** @var UploadedFile $avatarFile */
-            // $avatarFile = $form->get('avatar')->getData();
-
-            // if ($avatarFile) {
-            //     $avatarFileName = $fileUploader->upload($avatarFile);
-            //     $user->setAvatar($avatarFileName);
-            // }
 
             $entityManager->persist($user);
             $entityManager->flush();
