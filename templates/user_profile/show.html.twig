@@ -12,7 +12,7 @@
 			<div class="card card-small mb-4 pt-3">
 				<div class="card-header border-bottom text-center">
 					<div class="mb-3 mx-auto">
-						<img class="rounded-circle" src="{{ user.avatar }}" alt="Avatar" width="110">
+						<img class="rounded" src="/uploads/{{ user.avatar }}" alt="Avatar" width="110">
 					</div>
 					<h4 class="mb-0">{{ user.username }}</h4>
 					<span class="text-muted d-block mb-2">{{ user.email }}</span>
@@ -26,30 +26,32 @@
 			<!-- Start Update Card -->
 			<div class="card border-primary mb-3">
 				<div class="card-header border-bottom">
-					<h6 class="m-0">Informations Utilisateur</h6>
+					<h6 class="m-0">Modifier vos Informations personnels</h6>
 				</div>
 				<ul class="card-text">
 					<li class="list-group-item p-3">
-						<div class="row">
-							<div class="col-7">
-								{{ form_start(formProfile) }}
-								<div class="form-row">
-									<div class="form-group ">
-										{{ form_row(formProfile.username) }}
-									</div>
-									<div class="form-group ">
-										{{ form_row(formProfile.email) }}
-									</div>
+
+						<div class="col-10">
+							{{ form_start(formProfile) }}
+							<div class="form-row">
+								<div class="form-group ">
+									{{ form_row(formProfile.username) }}
+								</div>
+								<div class="form-group ">
+									{{ form_row(formProfile.email) }}
 								</div>
 							</div>
-							<div class="col-4">
-								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-								<div class="form-group mt-4 text-center">
-									<button type="submit" class="btn btn-success">Enregistrer les modifications</button>
-								</div>
-							</div>
-							{{ form_end(formProfile) }}
 						</div>
+						<div class="row">
+							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							<div class="form-group mt-4 text-center">
+								<div class="text-center">
+
+									{{ form_row(formProfile.modifyProfile) }}
+								</div>
+							</div>
+						</div>
+						{{ form_end(formProfile) }}
 					</li>
 				</ul>
 			</div>
@@ -58,27 +60,27 @@
 			<!-- Start Update Card -->
 			<div class="card border-danger mb-3">
 				<div class="card-header border-bottom">
-					<h6 class="m-0">Modificatiion de Mot de passe</h6>
+					<h6 class="m-0">Modifier votre Mot de passe</h6>
 				</div>
 				<ul class="card-text">
 					<li class="list-group-item p-3">
-						<div class="row">
-							<div class="col-7">
-								{{ form_start(formPassword) }}
-								<div class="form-row">
-									<div class="form-group ">
-										{{ form_row(formPassword.password) }}
-									</div>
-									<div class="form-group ">
-										{{ form_row(formPassword.confirmPassword) }}
-									</div>
+
+						<div class="col-10">
+							{{ form_start(formPassword) }}
+							<div class="form-row">
+								<div class="form-group ">
+									{{ form_row(formPassword.password) }}
+								</div>
+								<div class="form-group ">
+									{{ form_row(formPassword.confirmPassword) }}
 								</div>
 							</div>
-							<div class="col-4">
-								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-								<div class="form-group mt-4 text-center">
-									<button type="submit" class="btn btn-success">Enregistrer les modifications</button>
-								</div>
+						</div>
+						<div class="row">
+							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							<div class="text-center">
+
+								{{ form_row(formPassword.modifyPassword) }}
 							</div>
 							{{ form_end(formPassword) }}
 						</div>
@@ -90,31 +92,30 @@
 			<!-- Start Update Card -->
 			<div class="card border-info mb-3">
 				<div class="card-header border-bottom">
-					<h6 class="m-0">Avatar</h6>
+					<h6 class="m-0">Modifier votre Avatar</h6>
 				</div>
 				<ul class="card-text">
 					<li class="list-group-item p-3">
+						<div class="col-10">
+							{{ form_start(formAvatar) }}
+							<div class="form-row">
+								<div class="form-group ">
+									{{ form_row(formAvatar.avatar) }}
+								</div>
+							</div>
+						</div>
 						<div class="row">
-							<div class="col-7">
-								{{ form_start(formAvatar) }}
-								<div class="form-row">
-									<div class="form-group ">
-										{{ form_row(formAvatar.avatar) }}
-									</div>
-								</div>
+							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							<div class="text-center">
+
+								{{ form_row(formAvatar.modifyAvatar) }}
 							</div>
-							<div class="col-4">
-								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-								<div class="form-group mt-4 text-center">
-									<button type="submit" class="btn btn-success">Enregistrer les modifications</button>
-								</div>
-							</div>
-							{{ form_end(formProfile) }}
 						</div>
 					</li>
+					{{ form_end(formProfile) }}
 				</ul>
 			</div>
 		</div>
 	</div>
 	<!-- End Update Card -->
-</div>{% endblock %}
+{% endblock %}

@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -23,7 +24,6 @@ class UserAvatarType extends AbstractType
                 // make it optional so you don't have to re-upload the PDF file
                 // every time you edit the Product details
                 'required'   => false,
-                'data_class' => null,
                 'mapped'     => false,
                 // unmapped fields can't define their validation using attributes
                 // in the associated entity, so you can use the PHP constraint classes
@@ -39,6 +39,7 @@ class UserAvatarType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('modifyAvatar', SubmitType::class, ['label' => 'Modifier'])
         ;
     }
 
