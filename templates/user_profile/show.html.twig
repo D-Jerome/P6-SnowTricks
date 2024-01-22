@@ -94,26 +94,27 @@
 				<div class="card-header border-bottom">
 					<h6 class="m-0">Modifier votre Avatar</h6>
 				</div>
-				<ul class="card-text">
-					<li class="list-group-item p-3">
-						<div class="col-10">
-							{{ form_start(formAvatar) }}
-							<div class="form-row">
-								<div class="form-group ">
-									{{ form_row(formAvatar.avatar) }}
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-							<div class="text-center">
+				<div class="card-body ">
+					<img class="rounded " src="/uploads/{{ user.avatar }}" alt="Avatar" width="110">
 
-								{{ form_row(formAvatar.modifyAvatar) }}
+					<div class="card-text container ">
+						{{ form_start(formAvatar) }}
+						<div class="form-row">
+							<div class="">
+								{{ form_row(formAvatar.avatar) }}
 							</div>
 						</div>
-					</li>
+					</div>
+					<div class="row">
+						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+						<div class="text-center">
+
+							{{ form_row(formAvatar.modifyAvatar) }}
+						</div>
+					</div>
+
 					{{ form_end(formProfile) }}
-				</ul>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -38,7 +38,7 @@ class UserProfileController extends AbstractController
         }
 
         if ($formPassword->getClickedButton() && 'modifyPassword' === $formPassword->getClickedButton()->getName()) {
-            if ($formPassword->isSubmitted() &&  $formPassword->get('password') ===  $formPassword->get('confirmPassword')) {
+            if ($formPassword->isSubmitted() && $formPassword->get('password') === $formPassword->get('confirmPassword')) {
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(
                         $user,
