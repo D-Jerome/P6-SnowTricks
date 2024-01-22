@@ -26,13 +26,13 @@ class MediaType extends AbstractType
                 'placeholder' => 'Choisir un type de média',
                 'class'       => TypeMedia::class,
                 'required'    => false,
-                'mapped'      => false,
+                // 'mapped'      => false,
             ])
-            ->add('path', FileType::class, [
+            ->add('file', FileType::class, [
                 'label'       => false,
                 'required'    => false,
-                'data_class'  => Media::class,
-                'mapped'      => false,
+
+                // 'mapped'      => false,
                 'attr'        => [
                     'placeholder' => 'Ajouter un Media',
                 ],

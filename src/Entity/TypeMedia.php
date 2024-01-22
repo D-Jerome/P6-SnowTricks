@@ -6,6 +6,6 @@ namespace App\Entity;
 
 enum TypeMedia: string
 {
-    case Image = 'Picture';
+    case Image = 'Image';
     case Video = 'Video';
 }

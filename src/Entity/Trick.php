@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -43,6 +44,10 @@ class Trick
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
+    /**
+     * comments collection
+     * @var Collection<int,Comment>
+     */
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
@@ -50,8 +55,14 @@ class Trick
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    /**
+     * medias collection
+     * @var Collection<int,Media>
+     */
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Media::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $medias;
+
+    private ?string $mainPicture = null;
 
     /**
      * Constructor
@@ -201,6 +212,18 @@ class Trick
                 $media->setTrick(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMainPicture(): ?string
+    {
+        return $this->mainPicture;
+    }
+
+    public function setMainPicture(string $mainPicture): static
+    {
+        $this->mainPicture = $mainPicture;
 
         return $this;
     }

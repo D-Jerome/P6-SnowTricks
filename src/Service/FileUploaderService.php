@@ -22,7 +22,7 @@ class FileUploaderService
         $originalFilename = pathinfo($file->getClientOriginalName(), \PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-        $path = $this->params->get('uploads_directory') . $folder;
+        $path = $this->params->get('uploads_directory').$folder;
         try {
             $file->move("{$path}/", $fileName);
         } catch (FileException $e) {
@@ -34,16 +34,18 @@ class FileUploaderService
 
     public function delete(string $file, ?string $folder = ''): bool
     {
-        if ($file !== 'default.webp') {
-            $path = $this->params->get('uploads_directory') . $folder;
+        if ('default.webp' !== $file) {
+            $path = $this->params->get('uploads_directory').$folder;
 
-            $original = $path . '/' . $file;
+            $original = $path.'/'.$file;
 
             if (file_exists($original)) {
                 $success = unlink($original);
             }
+
             return true;
         }
+
         return false;
     }
 }

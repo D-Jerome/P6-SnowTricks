@@ -29,6 +29,10 @@ class Category
     #[Assert\Length(min: 4)]
     private ?string $name = null;
 
+    /**
+     * Trick collection
+     * @var Collection<int,Trick>
+     */
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Trick::class)]
     private Collection $tricks;
 

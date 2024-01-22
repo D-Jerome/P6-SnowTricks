@@ -7,16 +7,19 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Media;
 use App\Entity\Trick;
+use App\Entity\TypeMedia;
 use App\Entity\User;
 use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\TrickRepository;
+use App\Repository\UserRepository;
 use App\Service\FileUploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Webmozart\Assert\Assert;
 
 class TrickController extends AbstractController
 {
@@ -27,14 +30,14 @@ class TrickController extends AbstractController
         $medias = $trick->getMedias();
         $mainPicture = null;
         foreach ($medias as $media) {
-            if ('picture' === $media->getTypeMedia()) {
+            if (TypeMedia::Image === $media->getTypeMedia()) {
                 $mainPicture = $media->getPath();
 
                 break;
             }
         }
         if (!$mainPicture) {
-            $mainPicture = 'MainPics.jpg';
+            $mainPicture = 'default/MainPics.jpg';
         }
         $countMedia = \count($medias);
 
@@ -47,7 +50,7 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setTrick($trick);
-            $comment->setUser($this->getUser());
+
             $manager->persist($comment);
 
             $manager->flush();
@@ -68,6 +71,8 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
     {
+       
+        
         $this->denyAccessUnlessGranted('ROLE_USER');
         $mediasRepo = null;
         if (!$trick) {
@@ -76,25 +81,17 @@ class TrickController extends AbstractController
         } else {
             $this->denyAccessUnlessGranted('TRICK_EDIT', $trick);
         }
-
+        
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            dump($trick);
-            $medias = $form->get('medias')->getData();
-
-            foreach ($medias as $media) {
-                $mediaFile = $media->getPath();
-                dd($media);
-                $uploadFileName = $fileUploaderService->upload($mediaFile, 'media');
-
-                $med = new Media();
-                $med->setDescription($description);
-                $med->setTrick($trick);
-                $med->setTypeMedia($form->get('typeMedia')->getData());
-                $med->setPath($uploadFileName);
-                $manager->persist($med);
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($trick->getMedias() as $media) {
+                Assert::notNull($media->getFile());
+                $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
+                $media->setDescription('$media->getFile()->getClientOriginalName()');
+                $media->setPath($uploadFileName);
+                $manager->persist($media);
             }
 
             $manager->persist($trick);

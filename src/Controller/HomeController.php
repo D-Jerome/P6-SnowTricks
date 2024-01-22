@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\TypeMedia;
 use App\Repository\TrickRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,22 +16,21 @@ class HomeController extends AbstractController
     public function home(TrickRepository $trickRepository): Response
     {
         $tricks = $trickRepository->findAll();
-        $mainPicture = null;
+
         foreach ($tricks as $trick) {
-            $medias = $trick->getMedias();
-
-            foreach ($medias as $media) {
-                if ('picture' === $media->getTypeMedia()) {
-                    $mainPicture = $media->getPath();
-
-                    break;
+            foreach ($trick->getMedias() as $media) {
+                if (TypeMedia::Image === $media->getTypeMedia()) {
+                    $randomPicture = $media->getPath();
+                    if ($randomPicture) {
+                        $trick->setMainPicture($randomPicture);
+                        break;
+                    }
                 }
             }
         }
 
         return $this->render('home/index.html.twig', [
             'tricks'          => $tricks,
-            'mainPicture'     => $mainPicture,
         ]);
     }
 }
