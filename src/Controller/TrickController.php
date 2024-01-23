@@ -18,7 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Webmozart\Assert\Assert;
 
 class TrickController extends AbstractController
 {
@@ -83,12 +82,14 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($trick->getMedias() as $media) {
-                Assert::notNull($media->getFile());
-                $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
-                $media->setDescription('$media->getFile()->getClientOriginalName()');
-                $media->setPath($uploadFileName);
-                $manager->persist($media);
+            foreach ($trick->getMedias() as $key => $media) {
+               
+                if($media->getFile()) {
+                    $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
+                    $media->setDescription($media->getFile()->getClientOriginalName());
+                    $media->setPath($uploadFileName);
+                    $manager->persist($media);
+                }
             }
 
             $manager->persist($trick);

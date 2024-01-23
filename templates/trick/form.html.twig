@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 
+
 {% block title %}Trick
 {% endblock %}
 
@@ -38,17 +39,19 @@
 	<div class="d-grid col-6 mx-auto mb-2">
 		<button type="button" class="btn btn-outline-secondary btn-new" data-collection-holder-class="medias">Ajouter un nouveau media</button>
 	</div>
-	<ul id="medias" class="gap-2 col-12 medias d-flex p-2 justify-content-around flex-wrap" data-prototype="{{ form_widget(formTrick.medias.vars.prototype)|e("html_attr") }}" data-index="{{ formTrick.medias|length > 0 ? formTrick.medias|last.vars.name + 1 : 0 }}">
+	<ul id="medias" class="gap-2 col-12 medias d-flex p-2 justify-content-around flex-wrap" data-prototype="{{ form_widget(formTrick.medias.vars.prototype)|e("html_attr") }}" data-index="{{ formTrick.medias|length > 0 ? formTrick.medias|last.vars.name + 1 : 0 }}" >
 		{% for media in formTrick.medias %}
 			<dd class="card border-info col-lg-4 col-sm-10" name="typeMedia">
-				
-					<div class="card-header ">Image</div>
-					<div class="card-body ">
 
-						<p class="card-text">{{ form_row(media.typeMedia) }}
+				<div class="card-header ">Image</div>
+				<div class="card-body ">
 
-							{{ form_row(media.file) }}</p>
-					
+
+					{{ form_row(media.path) }}
+					<p class="card-text">{{ form_row(media.typeMedia) }}
+
+						{{ form_row(media.file) }}</p>
+
 				</div>
 
 			</dd>
@@ -72,21 +75,20 @@
 
 {% block javascripts %}
 	<script>
-		window.addEventListener('load', () => {
 
-function getId() {
+		window.addEventListener('load', () => {
+	function getId() {
 const listtypemedias = document.getElementsByTagName("typeMediaClass");
 const buttonPressed = e => {
-return e.target.id
-// console.log(e.target.id);  // Get ID of Clicked Element
+ return e.target.id
+alert(e.target.id);  // Get ID of Clicked Element
 }
-for (let listtypemedia of listtypemedias) {
-listtypemedia.addEventListener("click", buttonPressed);
+
 }
-}
+
 
 let typeMedia = document.querySelector("#" + getId());
-
+console.log()
 if (typeMedia != null) {
 
 
@@ -120,6 +122,7 @@ item.classList.add("col-sm-10");
 item.classList.add("card");
 item.classList.add("border-primary");
 item.classList.add("typemedia");
+
 
 
 const header = document.createElement('div');
@@ -168,3 +171,4 @@ btn.addEventListener("click", addFormToCollection)
 	</script>
 
 {% endblock %}
+
