@@ -89,7 +89,7 @@ class Media
         return $this->file;
     }
 
-    public function setFile(?UploadedFile $file = null ): static
+    public function setFile(UploadedFile $file = null): static
     {
         $this->file = $file;
 

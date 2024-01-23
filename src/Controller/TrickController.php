@@ -70,6 +70,7 @@ class TrickController extends AbstractController
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
+        
         $mediasRepo = null;
         if (!$trick) {
             $trick = new Trick();
@@ -83,7 +84,6 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($trick->getMedias() as $key => $media) {
-               
                 if($media->getFile()) {
                     $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
                     $media->setDescription($media->getFile()->getClientOriginalName());

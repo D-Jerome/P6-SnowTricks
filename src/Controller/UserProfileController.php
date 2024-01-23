@@ -29,7 +29,6 @@ class UserProfileController extends AbstractController
         $formPassword->handleRequest($request);
         $formAvatar->handleRequest($request);
 
-
         if ($formProfile->getClickedButton() && 'modifyProfile' === $formProfile->getClickedButton()->getName()) {
             if ($formProfile->isSubmitted()) {
                 $manager->persist($user);
