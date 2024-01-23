@@ -1,0 +1,24 @@
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  height: 100px;
+  width: 100px;
+  outline: black;
+  background-size: 100%, 100%;
+  background-image: none;
+}
+
+.carousel-control-next-icon:after
+{
+  content: '>';
+  font-size: 55px;
+  color:  #E83283;
+}
+
+.carousel-control-prev-icon:after {
+  content: '<';
+  font-size: 55px;
+  color: #E83283;
+}
+
+.carousel .carousel-indicators button {  background-color: skyblue; }
+.carousel .carousel-indicators button.active { background-color: #E83283; }

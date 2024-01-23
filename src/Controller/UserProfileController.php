@@ -21,7 +21,6 @@ class UserProfileController extends AbstractController
     public function showProfile(Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploader, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = $this->getUser();
-
         $formProfile = $this->createForm(UserProfileType::class, $user);
         $formPassword = $this->createForm(UpdatePasswordType::class, $user);
         $formAvatar = $this->createForm(UserAvatarType::class);
@@ -38,7 +37,7 @@ class UserProfileController extends AbstractController
         }
 
         if ($formPassword->getClickedButton() && 'modifyPassword' === $formPassword->getClickedButton()->getName()) {
-            if ($formPassword->isSubmitted() &&  $formPassword->get('password') ===  $formPassword->get('confirmPassword')) {
+            if ($formPassword->isSubmitted() && $formPassword->get('password') === $formPassword->get('confirmPassword')) {
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(
                         $user,
@@ -53,11 +52,9 @@ class UserProfileController extends AbstractController
             if ($formAvatar->isSubmitted()) {
                 $avatarFile = $formAvatar->get('avatar')->getData();
 
-                if (!empty($avatarFile)) {
-                    /** @var UploadedFile $fileUploader */
-                    $avatarFileName = $fileUploader->upload($avatarFile);
-                    $user->setAvatar($avatarFileName);
-                }
+                $avatarFileName = $fileUploader->upload($avatarFile, '');
+                $user->setAvatar($avatarFileName);
+
                 $manager->persist($user);
                 $manager->flush();
             }
