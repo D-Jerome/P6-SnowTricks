@@ -40,16 +40,22 @@
 	</div>
 	<ul id="medias" class="gap-2 col-12 medias d-flex p-2 justify-content-around flex-wrap" data-prototype="{{ form_widget(formTrick.medias.vars.prototype)|e("html_attr") }}" data-index="{{ formTrick.medias|length > 0 ? formTrick.medias|last.vars.name + 1 : 0 }}">
 		{% for media in formTrick.medias %}
-			<dd class="col-lg-4 col-sm-10" name="typeMedia">
-				{{ form_row(media.typeMedia) }}
+			<dd class="card border-info col-lg-4 col-sm-10" name="typeMedia">
+				
+					<div class="card-header ">Image</div>
+					<div class="card-body ">
+
+						<p class="card-text">{{ form_row(media.typeMedia) }}
+
+							{{ form_row(media.file) }}</p>
+					
+				</div>
+
 			</dd>
-			<dd class="col-lg-4 col-sm-10">
-				{{ form_row(media.path) }}
-			</dd>
-			
+
 		{% endfor %}
 	</ul>
-	
+
 	{{ form_errors(formTrick.medias) }}
 
 	<div class="d-grid gap-2 col-10 mx-auto">
@@ -67,100 +73,98 @@
 {% block javascripts %}
 	<script>
 		window.addEventListener('load', () => {
-			
-			function getId(){   
-    			const listtypemedias = document.getElementsByTagName("typeMediaClass");
-				const buttonPressed = e => {
-					return e.target.id
-				// console.log(e.target.id);  // Get ID of Clicked Element
-				}
-				for (let listtypemedia of listtypemedias) {
-				listtypemedia.addEventListener("click", buttonPressed);
-				}
-			}
-			
-			let typeMedia = document.querySelector("#"+getId());
-				
-			if (typeMedia != null) {
-    
-  
-				typeMedia.addEventListener("click",function(){
 
-					let form = this.closest("form");
-					let data = this.name + "=" + this.value;
+function getId() {
+const listtypemedias = document.getElementsByTagName("typeMediaClass");
+const buttonPressed = e => {
+return e.target.id
+// console.log(e.target.id);  // Get ID of Clicked Element
+}
+for (let listtypemedia of listtypemedias) {
+listtypemedia.addEventListener("click", buttonPressed);
+}
+}
 
-					fetch(form.action, {
-						method: form.getAttribute("method"),
-						body : data,
-						header: {
-							"Content-Type": "application/x-www-form-urlencoded; charset:utf-8"
-						}
-					})
-				// 	.then(response => response.text())
-				// 	.then(html =>{
-				// 		let content = document.createElement("html");
-				// 		content.innerHTML =html;
-				// 		let ne
-					})
-			 }
+let typeMedia = document.querySelector("#" + getId());
+
+if (typeMedia != null) {
 
 
+typeMedia.addEventListener("click", function () {
+
+let form = this.closest("form");
+let data = this.name + "=" + this.value;
+
+fetch(form.action, {
+method: form.getAttribute("method"),
+body: data,
+header: {
+"Content-Type": "application/x-www-form-urlencoded; charset:utf-8"
+}
+})
+// .then(response => response.text())
+// .then(html =>{
+// let content = document.createElement("html");
+// content.innerHTML =html;
+// let ne
+})
+}
 
 
+const addFormToCollection = (e) => {
+const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+const item = document.createElement('dd');
+item.classList.add("col-lg-4");
+item.classList.add("col-sm-10");
+item.classList.add("card");
+item.classList.add("border-primary");
+item.classList.add("typemedia");
 
 
+const header = document.createElement('div');
+header.classList.add("card-header");
+header.innerHTML = 'Nouvelle Image';
+item.appendChild(header);
+
+const body = document.createElement('div');
+body.classList.add("card-body");
+item.appendChild(body);
+
+const text = document.createElement('p');
+text.classList.add("card-text");
+text.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, collectionHolder.dataset.index);
+body.appendChild(text);
 
 
+collectionHolder.appendChild(item);
+collectionHolder.dataset.index ++;
+addMediaFormDeleteLink(item);
+}
 
+const addMediaFormDeleteLink = (item) => {
+let removeFormButton = document.createElement('button');
+removeFormButton.type = 'button';
+removeFormButton.className = 'btn btn-danger mb-2';
+removeFormButton.innerText = 'Supprimer';
 
+item.append(removeFormButton);
 
+removeFormButton.addEventListener('click', (e) => {
+e.preventDefault();
+// remove the li for the tag form
+item.remove();
+});
+}
 
+document.querySelectorAll('ul.medias dd').forEach((media) => {
+addMediaFormDeleteLink(media)
+});
 
-
-
-
-
-
-
-
-
-			const addFormToCollection = (e) => {
-				const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
-
-				const item = document.createElement('dd');
-				item.classList.add("col-lg-4");
-				item.classList.add("col-sm-10");
-				item.classList.add("typemedia");
-				item.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, collectionHolder.dataset.index);
-
-				collectionHolder.appendChild(item);
-			collectionHolder.dataset.index ++;
-			addMediaFormDeleteLink(item);
-			}
-
-			const addMediaFormDeleteLink = (item) => {
-				let removeFormButton = document.createElement('button');
-				removeFormButton.type = 'button';
-				removeFormButton.className = 'btn btn-danger mb-2';
-				removeFormButton.innerText = 'Supprimer';
-
-				item.append(removeFormButton);
-
-				removeFormButton.addEventListener('click', (e) => {
-				e.preventDefault();
-				// remove the li for the tag form
-				item.remove();
-				});
-			}
-
-			document.querySelectorAll('ul.medias dd').forEach((media) => {
-			addMediaFormDeleteLink(media)
-			});
-
-			document.querySelectorAll('.btn-new').forEach(btn => {
-			btn.addEventListener("click", addFormToCollection)
-			});
-		})
+document.querySelectorAll('.btn-new').forEach(btn => {
+btn.addEventListener("click", addFormToCollection)
+});
+})
 	</script>
 
 {% endblock %}

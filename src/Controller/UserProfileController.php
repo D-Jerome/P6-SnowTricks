@@ -18,8 +18,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserProfileController extends AbstractController
 {
     #[Route('/user/', name: 'app_user_profile')]
-    public function showProfile(Request $request, User $user, EntityManagerInterface $manager, FileUploaderService $fileUploader, UserPasswordHasherInterface $userPasswordHasher): Response
+    public function showProfile(Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploader, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+        $user = $this->getUser();
         $formProfile = $this->createForm(UserProfileType::class, $user);
         $formPassword = $this->createForm(UpdatePasswordType::class, $user);
         $formAvatar = $this->createForm(UserAvatarType::class);
@@ -27,6 +28,7 @@ class UserProfileController extends AbstractController
         $formProfile->handleRequest($request);
         $formPassword->handleRequest($request);
         $formAvatar->handleRequest($request);
+
 
         if ($formProfile->getClickedButton() && 'modifyProfile' === $formProfile->getClickedButton()->getName()) {
             if ($formProfile->isSubmitted()) {

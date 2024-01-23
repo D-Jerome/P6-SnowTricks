@@ -15,20 +15,20 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Webmozart\Assert\Assert;
 
 class AppFixtures extends Fixture
 {
-    private $userPasswordHasher;
-    private $em;
- 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher,  EntityManagerInterface $em)
+    private UserPasswordHasherInterface $userPasswordHasher;
+    private EntityManagerInterface $em;
+
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em)
     {
         $this->userPasswordHasher = $userPasswordHasher;
-        
+
         $this->em = $em;
     }
-    
-    
+
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
@@ -45,11 +45,10 @@ class AppFixtures extends Fixture
                 )
             )
         ;
-        
+
         $this->em->persist($admin);
         $this->em->flush();
 
-        
         for ($g = 0; $g < 5; ++$g) {
             $category = new Category();
             $category->setName($faker->sentence(3));
@@ -63,11 +62,14 @@ class AppFixtures extends Fixture
                 $this->em->persist($user);
 
                 for ($j = 0; $j < random_int(0, 10); ++$j) {
+                    $description = $faker->paragraphs(20, true);
+
+                    Assert::string($description);
                     $trick = new Trick();
                     $slug = $faker->slug(3, false);
                     $name = str_replace('-', ' ', $slug);
                     $trick->setName($name)
-                        ->setDescription($faker->paragraphs(20, true))
+                        ->setDescription($description)
                         ->setCategory($category)
                         ->setUser($user)
                     ;

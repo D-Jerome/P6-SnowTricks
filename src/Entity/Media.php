@@ -29,7 +29,6 @@ class Media
     #[ORM\JoinColumn(nullable: false)]
     private ?Trick $trick = null;
 
-   
     private ?UploadedFile $file = null;
 
     public function getId(): ?int

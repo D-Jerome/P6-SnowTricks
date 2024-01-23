@@ -12,7 +12,6 @@ use App\Entity\User;
 use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\TrickRepository;
-use App\Repository\UserRepository;
 use App\Service\FileUploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,7 +49,7 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setTrick($trick);
-
+            $comment->setUser($trick->getUser());
             $manager->persist($comment);
 
             $manager->flush();
@@ -71,8 +70,6 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
     {
-       
-        
         $this->denyAccessUnlessGranted('ROLE_USER');
         $mediasRepo = null;
         if (!$trick) {
@@ -81,7 +78,7 @@ class TrickController extends AbstractController
         } else {
             $this->denyAccessUnlessGranted('TRICK_EDIT', $trick);
         }
-        
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
