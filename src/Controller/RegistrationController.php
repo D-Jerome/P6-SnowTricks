@@ -43,7 +43,7 @@ class RegistrationController extends AbstractController
 
             $validation = new Validation();
             $validation->setUser($user);
-            $token = (string) md5(uniqid());
+            $token = (string) (md5(uniqid()).md5(uniqid()));
             $validation->setToken($token);
             $validation->setCreatedAt(new \DateTimeImmutable());
 
@@ -74,15 +74,15 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/check/{token}', name: 'app_user_check')]
-    public function verifyUser(string $token, ValidationRepository $validationRepository, UserRepository $usersRepository, EntityManagerInterface $em): Response
+    public function verifyUser(string $token, ValidationRepository $validationRepository, UserRepository $usersRepository, EntityManagerInterface $manager): Response
     {
         $valid = $validationRepository->findOneBy(['token'=>$token]);
-        Assert::notNull($valid);
-        /**
-         * @var User $user
-         */
-        $user = $valid->getUser();
-
+        if($valid) {
+            /**
+             * @var User $user
+             */
+            $user = $valid->getUser();
+        }
         if(null === $valid || false === $valid->isValid() || true === $user->isActive()) {
             $this->addFlash('danger', 'Le token est invalide ou a expiré');
 
@@ -90,20 +90,23 @@ class RegistrationController extends AbstractController
         }
 
         $user->setActive(true);
-        $em->persist($user);
-        $em->flush();
+        $manager->persist($user);
+        $manager->flush();
         $this->addFlash('success', 'Votre compte est activé. Vous pouvez vous connecter');
 
         return $this->redirectToRoute('app_security_login');
     }
 
     #[Route('/resendmail', name: 'app_user_resend_mail')]
-    public function resendMail(Request $request, SendMailService $mail, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    public function resendMail(Request $request, SendMailService $mail, EntityManagerInterface $manager, UserRepository $userRepository): Response
     {
-        /**
-         * @var User $user
-         */
-        $user = $this->getUser();
+        $user = null;
+        if ($this->getUser()) {
+            /**
+             * @var User $user
+             */
+            $user = $this->getUser();
+        }
         if(!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour accéder à cette page');
 
@@ -119,11 +122,12 @@ class RegistrationController extends AbstractController
         $validation = $user->getValidation();
         Assert::notNull($validation);
         $validation->setUser($user);
-        $validation->setToken(md5(uniqid()));
+        $token = (string) (md5(uniqid()).md5(uniqid()));
+        $validation->setToken($token);
         $validation->setCreatedAt(new \DateTimeImmutable());
 
-        $entityManager->persist($validation);
-        $entityManager->flush();
+        $manager->persist($validation);
+        $manager->flush();
         Assert::notNull($user->getEmail());
         $mail->send(
             'no-reply@snowTricks.comm',
@@ -132,7 +136,7 @@ class RegistrationController extends AbstractController
             'register',
             [
                 'user'  => $user,
-                'token' => $validation->getToken(),
+                'token' => $token,
             ]
         );
 
