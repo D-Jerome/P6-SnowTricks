@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\UpdatePasswordType;
 use App\Form\UserAvatarType;
 use App\Form\UserProfileType;
 use App\Service\FileUploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Webmozart\Assert\Assert;
 
 class UserProfileController extends AbstractController
 {
@@ -22,45 +25,50 @@ class UserProfileController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        /**
+         * @var User $user
+         */
         $user = $this->getUser();
 
         $formProfile = $this->createForm(UserProfileType::class, $user);
+
         $formPassword = $this->createForm(UpdatePasswordType::class, $user);
+
         $formAvatar = $this->createForm(UserAvatarType::class);
 
         $formProfile->handleRequest($request);
         $formPassword->handleRequest($request);
         $formAvatar->handleRequest($request);
 
-        if ($formProfile->getClickedButton() && 'modifyProfile' === $formProfile->getClickedButton()->getName()) {
-            if ($formProfile->isSubmitted() && $formProfile->isValid()) {
-                $manager->persist($user);
-                $manager->flush();
-            }
+        if ($formProfile->isSubmitted() && $formProfile->isValid()) {
+            $manager->persist($user);
+            $manager->flush();
         }
 
-        if ($formPassword->getClickedButton() && 'modifyPassword' === $formPassword->getClickedButton()->getName()) {
-            if ($formPassword->isSubmitted() && $formPassword->isValid()) {
-                $user->setPassword(
-                    $userPasswordHasher->hashPassword(
-                        $user,
-                        $formPassword->get('password')->getData()
-                    )
-                );
-                $manager->persist($user);
-                $manager->flush();
-            }
+        if ($formPassword->isSubmitted() && $formPassword->isValid()) {
+            Assert::String($formPassword->get('password')->getData());
+
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $formPassword->get('password')->getData()
+                )
+            );
+            $manager->persist($user);
+            $manager->flush();
         }
-        if ($formAvatar->getClickedButton() && 'modifyAvatar' === $formAvatar->getClickedButton()->getName()) {
-            if ($formAvatar->isSubmitted() && $formAvatar->isValid()) {
-                $avatarFile = $formAvatar->get('avatar')->getData();
 
-                $avatarFileName = $fileUploader->upload($avatarFile, '');
-                $user->setAvatar($avatarFileName);
+        if ($formAvatar->isSubmitted() && $formAvatar->isValid()) {
+            /**
+             * @var UploadedFile $avatarFile
+             */
+            $avatarFile = $formAvatar->get('avatar')->getData();
 
-                $manager->persist($user);
-                $manager->flush();
-            }
+            $avatarFileName = $fileUploader->upload($avatarFile, '');
+            $user->setAvatar($avatarFileName);
+
+            $manager->persist($user);
+            $manager->flush();
         }
 
         return $this->render('user_profile/show.html.twig', [

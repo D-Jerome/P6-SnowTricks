@@ -11,18 +11,16 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TrickVoter extends Voter
 {
-    public const EDIT = 'TRICK_EDIT';
+    public const AUTH = 'TRICK_AUTH';
     public const DELETE = 'TRICK_DELETE';
-    public const ADD = 'TRICK_ADD';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if (!\in_array($attribute, [self::EDIT, self::DELETE, self::ADD], true)) {
+        if (!\in_array($attribute, [self::AUTH, self::DELETE], true)) {
             return false;
         }
 
-        // only vote on `Post` objects
         if (!$subject instanceof Trick) {
             return false;
         }
@@ -46,9 +44,8 @@ class TrickVoter extends Voter
         $trick = $subject;
 
         return match($attribute) {
-            self::EDIT   => $this->canEdit($trick, $user),
+            self::AUTH   => $this->canAuth($trick, $user),
             self::DELETE => $this->canDelete($trick, $user),
-            self::ADD    => $this->canAdd($trick, $user),
             default      => throw new \LogicException('This code should not be reached!')
         };
     }
@@ -58,12 +55,7 @@ class TrickVoter extends Voter
         return $user === $trick->getUser();
     }
 
-    private function canEdit(Trick $trick, User $user): bool
-    {
-        return $user === $trick->getUser();
-    }
-
-    private function canAdd(Trick $trick, User $user): bool
+    private function canAuth(Trick $trick, User $user): bool
     {
         return $user === $trick->getUser();
     }

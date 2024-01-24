@@ -95,6 +95,7 @@ class SecurityController extends AbstractController
              */
             $user = $valid->getUser();
         }
+
         if(null === $valid || false === $valid->isValid()) {
             $this->addFlash('danger', 'Le token est invalide ou a expiré');
 

@@ -16,7 +16,6 @@ class UserAvatarType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        
         $builder
             ->add('avatar', FileType::class, [
                 'label' => 'Selectionner votre avatar',

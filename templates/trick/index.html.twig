@@ -111,7 +111,7 @@
 					<h4>Commentaires</h4>
 				</div>
 				<div class="card-body text-center">
-					{% if app.user %}
+					{% if app.user and app.user.active %}
 						{{ form_start(formComment) }}
 						{{ form_row(formComment.content, {
                 				'label' : 'Ajouter une commentaire',
