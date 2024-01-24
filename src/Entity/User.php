@@ -29,9 +29,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 3, minMessage: 'Votre username doit contenir au moins 3 caractères')]
     private ?string $username = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:false)]
     #[Assert\Email(message: 'Email non valide')]
-    private ?string $email = null;
+    private string $email;
 
     #[ORM\Column(length: 255)]
     #[Assert\Length(min: 8, minMessage: 'Votre mot de passe doit contenir au mois 8 caractères')]
@@ -44,15 +44,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $avatar = 'user.png';
+    #[ORM\Column(nullable: true)]
+    private ?string $avatar;
 
     #[ORM\Column]
     private ?bool $active = null;
 
+    /**
+     * Trick collection
+     * @var Collection<int,Trick>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Trick::class)]
     private Collection $tricks;
 
+    /**
+     * comments collection
+     * @var Collection<int,Comment>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
     private Collection $comments;
 
@@ -65,6 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->active = false;
+        $this->avatar = 'default/user.png';
     }
 
     public function getId(): ?int
