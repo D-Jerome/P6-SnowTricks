@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\Validation;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
+use App\Repository\ValidationRepository;
 use App\Security\UserAuthenticator;
 use App\Service\SendMailService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Webmozart\Assert\Assert;
 
 class RegistrationController extends AbstractController
 {
@@ -47,13 +49,16 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($validation);
             $entityManager->flush();
-
+            Assert::notNull($user->getEmail());
             $mail->send(
                 'no-reply@snowTricks.comm',
                 $user->getEmail(),
                 'Lien d\'Activation de votre compte sur le site communautaire SnowTricks',
                 'register',
-                compact('user', 'token')
+                [
+                    'user'  => $user,
+                    'token' => $token,
+                ]
             );
 
             return $userAuthenticator->authenticateUser(
@@ -72,9 +77,13 @@ class RegistrationController extends AbstractController
     public function verifyUser(string $token, ValidationRepository $validationRepository, UserRepository $usersRepository, EntityManagerInterface $em): Response
     {
         $valid = $validationRepository->findOneBy(['token'=>$token]);
-
+        Assert::notNull($valid);
+        /**
+         * @var User $user
+         */
         $user = $valid->getUser();
-        if(null === $valid || false === $valid->isValid() || true === $user->getEnable() || null !== $user->getResetToken()) {
+
+        if(null === $valid || false === $valid->isValid() || true === $user->isActive()) {
             $this->addFlash('danger', 'Le token est invalide ou a expiré');
 
             return $this->redirectToRoute('app_home');
@@ -85,18 +94,20 @@ class RegistrationController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'Votre compte est activé. Vous pouvez vous connecter');
 
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('app_security_login');
     }
 
     #[Route('/resendmail', name: 'app_user_resend_mail')]
     public function resendMail(Request $request, SendMailService $mail, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
+        /**
+         * @var User $user
+         */
         $user = $this->getUser();
-
         if(!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour accéder à cette page');
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_security_login');
         }
 
         if($user->isActive()) {
@@ -106,23 +117,27 @@ class RegistrationController extends AbstractController
         }
 
         $validation = $user->getValidation();
+        Assert::notNull($validation);
         $validation->setUser($user);
         $validation->setToken(md5(uniqid()));
         $validation->setCreatedAt(new \DateTimeImmutable());
 
         $entityManager->persist($validation);
         $entityManager->flush();
-
+        Assert::notNull($user->getEmail());
         $mail->send(
             'no-reply@snowTricks.comm',
             $user->getEmail(),
             'Lien d\'Activation de votre compte sur le site communautaire SnowTricks',
             'register',
-            $validation->getToken()
+            [
+                'user'  => $user,
+                'token' => $validation->getToken(),
+            ]
         );
 
         $this->addFlash('success', 'Email de vérification envoyé');
 
-        return $this->redirectToRoute('profile_index');
+        return $this->redirectToRoute('app_home');
     }
 }

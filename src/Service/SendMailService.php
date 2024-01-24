@@ -6,6 +6,7 @@ namespace App\Service;
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use App\Entity\User;
 
 class SendMailService
 {
@@ -16,24 +17,16 @@ class SendMailService
         $this->mailer = $mailer;
     }
 
-    
     /**
      * Email
-     * @param string $from
-     * @param string $to
-     * @param string $subject
-     * @param string $template
-     * @param array<string> $context
-     * 
-     * @return void
-     * 
+     * @param array<string,string|User> $context
      */
     public function send(
         string $from,
         string $to,
         string $subject,
         string $template,
-        array  $context
+        array $context
     ): void {
         // On crée le mail
         $email = (new TemplatedEmail())

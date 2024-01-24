@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ValidationRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ValidationRepository::class)]
 class Validation
 {
+    const EXPIRATION_TIME = 10800; 
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -63,5 +68,15 @@ class Validation
         $this->user = $user;
 
         return $this;
+    }
+
+    public function isValid():bool
+    {
+        return true;
+        // $interval = $this->getCreatedAt()->diff(new \DateTime())->format("%s");
+        // if ($interval >= Validation::EXPIRATION_TIME){
+        //     return false;
+        // }
+
     }
 }

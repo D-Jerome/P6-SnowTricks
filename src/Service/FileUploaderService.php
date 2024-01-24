@@ -14,7 +14,8 @@ class FileUploaderService
     public function __construct(
         private ParameterBagInterface $params,
         private SluggerInterface $slugger,
-    ) {}
+    ) {
+    }
 
     public function upload(UploadedFile $file): string
     {
@@ -23,13 +24,11 @@ class FileUploaderService
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
         $path = $this->params->get('uploads_directory');
         try {
-            $file->move($path . '/', $fileName);
+            $file->move($path.'/', $fileName);
         } catch (FileException $e) {
             // ... handle exception if something happens during file upload
         }
 
         return $fileName;
     }
-
-    
 }

@@ -55,7 +55,11 @@ class TrickController extends AbstractController
 
         if (!$trick) {
             $trick = new Trick();
-            $trick->setUser($this->getUser());
+            /**
+             * @var User $user
+             */
+            $user = $this->getUser();
+            $trick->setUser($user);
         } else {
             $this->denyAccessUnlessGranted('TRICK_EDIT', $trick);
         }
