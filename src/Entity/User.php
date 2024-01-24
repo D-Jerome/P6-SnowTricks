@@ -35,7 +35,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\Length(min: 8, minMessage: 'Votre mot de passe doit contenir au mois 8 caractères')]
-    #[Assert\Regex(pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', message: 'Votre mot de passe doit contenir au moins 1 chiffre, 1 Majuscule, 1 minuscule, 1 caractère special')]
+    #[Assert\Regex(pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#?!@$ %^&*-])[A-Za-z\d#?!@$ %^&*-]{8,}$/', message: 'Votre mot de passe doit contenir au moins 1 chiffre, 1 Majuscule, 1 minuscule, 1 caractère special( #?!@$ %^&*- )')]
     private ?string $password = null;
 
     #[Assert\EqualTo(propertyPath: 'password', message: 'Les mots de passes ne correspondent pas')]
