@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\UpdatePasswordType;
 use App\Form\UserAvatarType;
 use App\Form\UserProfileType;
@@ -20,7 +21,10 @@ class UserProfileController extends AbstractController
     #[Route('/user/', name: 'app_user_profile')]
     public function showProfile(Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploader, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        
         $user = $this->getUser();
+
         $formProfile = $this->createForm(UserProfileType::class, $user);
         $formPassword = $this->createForm(UpdatePasswordType::class, $user);
         $formAvatar = $this->createForm(UserAvatarType::class);

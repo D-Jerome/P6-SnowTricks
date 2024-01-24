@@ -64,6 +64,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
     private Collection $comments;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Validation $validation = null;
+
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
@@ -234,5 +237,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    public function getValidation(): ?Validation
+    {
+        return $this->validation;
+    }
+
+    public function setValidation(Validation $validation): static
+    {
+        // set the owning side of the relation if necessary
+        if ($validation->getUser() !== $this) {
+            $validation->setUser($this);
+        }
+
+        $this->validation = $validation;
+
+        return $this;
     }
 }

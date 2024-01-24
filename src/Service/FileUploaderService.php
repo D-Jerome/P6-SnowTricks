@@ -35,22 +35,5 @@ class FileUploaderService
         return $fileName;
     }
 
-    public function delete(string $file, ?string $folder = ''): bool
-    {
-        if ('default.webp' !== $file) {
-            $path = $this->params->get('uploads_directory');
-            Assert::string($path);
-            $path .= $folder;
-
-            $original = $path.'/'.$file;
-
-            if (file_exists($original)) {
-                $success = unlink($original);
-            }
-
-            return true;
-        }
-
-        return false;
-    }
+    
 }
