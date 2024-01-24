@@ -51,7 +51,8 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('TRICK_ADD', $trick);
+        $this->denyAccessUnlessGranted('TRICK_EDIT', $trick);
 
         if (!$trick) {
             $trick = new Trick();

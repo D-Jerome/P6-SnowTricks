@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
-use App\Entity\Trick;
+use App\Entity\Category;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -15,21 +15,21 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * @template TSubject
  * @extends  Voter<mixed>
  */
-class TrickVoter extends Voter
+class CategoryVoter extends Voter
 {
-    public const EDIT = 'TRICK_EDIT';
-    public const DELETE = 'TRICK_DELETE';
-    public const ADD = 'TRICK_ADD';
+
+    public const ADD = 'CATEGORY_ADD';
+    public const EDIT = 'CATEGORY_EDIT';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if (!\in_array($attribute, [self::EDIT, self::DELETE, self::ADD], true)) {
+        if (!\in_array($attribute, [self::ADD, self::EDIT], true)) {
             return false;
         }
 
         // only vote on `Post` objects
-        if (!$subject instanceof Trick) {
+        if (!$subject instanceof Category) {
             return false;
         }
 
@@ -48,31 +48,25 @@ class TrickVoter extends Voter
             return false;
         }
 
-
-
-        /** @var Trick $trick */
-        $trick = $subject;
+        
+        /** @var Category $category */
+        $category = $subject;
 
         return match($attribute) {
-            self::EDIT   => $this->canEdit($trick, $user),
-            self::DELETE => $this->canDelete($trick, $user),
-            self::ADD    => $this->canAdd($trick, $user),
+            self::EDIT   => $this->canEdit($category, $user),
+            self::ADD    => $this->canAdd($category, $user),
             default      => throw new \LogicException('This code should not be reached!')
         };
     }
 
-    private function canDelete(Trick $trick, User $user): bool
+    
+    private function canEdit(Category $category): bool
     {
-        return $user === $trick->getUser();
+        return true;
     }
 
-    private function canEdit(Trick $trick, User $user): bool
+    private function canAdd(Category $category): bool
     {
-        return $user === $trick->getUser();
-    }
-
-    private function canAdd(Trick $trick, User $user): bool
-    {
-        return $user === $trick->getUser();
+        return true;
     }
 }

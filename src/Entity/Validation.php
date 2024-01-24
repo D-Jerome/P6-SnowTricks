@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ValidationRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,13 +22,16 @@ class Validation
     #[ORM\Column(type: Types::TEXT)]
     private ?string $token = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(nullable: false)]
+    private \DateTime $createdAt;
 
     #[ORM\OneToOne(inversedBy: 'validation', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    private DateTime $expiredAt;
+
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -45,12 +49,12 @@ class Validation
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
 
@@ -71,10 +75,14 @@ class Validation
 
     public function isValid(): bool
     {
+       
+            $this->expiredAt = ($this->getCreatedAt())->modify('+ 10800 second');
+
+        $now = new DateTime();
+        if ($now > $this->expiredAt) {
+            return false;
+        }
+
         return true;
-        // $interval = $this->getCreatedAt()->diff(new \DateTime())->format("%s");
-        // if ($interval >= Validation::EXPIRATION_TIME){
-        //     return false;
-        // }
     }
 }

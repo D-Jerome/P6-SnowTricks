@@ -45,7 +45,7 @@ class RegistrationController extends AbstractController
             $validation->setUser($user);
             $token = (string) (md5(uniqid()).md5(uniqid()));
             $validation->setToken($token);
-            $validation->setCreatedAt(new \DateTimeImmutable());
+            $validation->setCreatedAt(new \DateTime());
 
             $entityManager->persist($validation);
             $entityManager->flush();
@@ -124,8 +124,8 @@ class RegistrationController extends AbstractController
         $validation->setUser($user);
         $token = (string) (md5(uniqid()).md5(uniqid()));
         $validation->setToken($token);
-        $validation->setCreatedAt(new \DateTimeImmutable());
-
+        $validation->setCreatedAt(new \DateTime());
+        
         $manager->persist($validation);
         $manager->flush();
         Assert::notNull($user->getEmail());

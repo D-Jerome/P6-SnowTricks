@@ -46,7 +46,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/forgot-password', name: 'app_security_forgot_password')]
-    public function forgotPassword(Request $request, SendMailService $mail, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function forgotPassword(Request $request, SendMailService $mail, UserRepository $userRepository, EntityManagerInterface $manager): Response
     {
         $form = $this->createForm(EmailForgotPasswordType::class);
         $form->handleRequest($request);
@@ -59,10 +59,10 @@ class SecurityController extends AbstractController
                 $validation->setUser($user);
                 $token = (string) (md5(uniqid()).md5(uniqid()));
                 $validation->setToken($token);
-                $validation->setCreatedAt(new \DateTimeImmutable());
+                $validation->setCreatedAt(new \DateTime());
 
-                $entityManager->persist($validation);
-                $entityManager->flush();
+                $manager->persist($validation);
+                $manager->flush();
                 Assert::notNull($user->getEmail());
                 $mail->send(
                     'no-reply@snowTricks.comm',
@@ -97,7 +97,7 @@ class SecurityController extends AbstractController
              */
             $user = $valid->getUser();
         }
-        if(null === $valid || false === $valid->isValid() ) {
+        if(null === $valid || false === $valid->isValid()  ) {
             $this->addFlash('danger', 'Le token est invalide ou a expiré');
 
             return $this->redirectToRoute('app_home');
