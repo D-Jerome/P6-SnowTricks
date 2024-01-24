@@ -85,11 +85,9 @@ class SecurityController extends AbstractController
         ]);
     }
 
-
     #[Route(path:'/reset/{token}', name:'app_reset_password')]
-    public function resetPassword(string $token , Request $request, UserPasswordHasherInterface $userPasswordHasher, ValidationRepository $validationRepository, EntityManagerInterface $manager): Response
+    public function resetPassword(string $token, Request $request, UserPasswordHasherInterface $userPasswordHasher, ValidationRepository $validationRepository, EntityManagerInterface $manager): Response
     {
-       
         $valid = $validationRepository->findOneBy(['token'=>$token]);
         if($valid) {
             /**
@@ -97,35 +95,36 @@ class SecurityController extends AbstractController
              */
             $user = $valid->getUser();
         }
-        if(null === $valid || false === $valid->isValid()  ) {
+        if(null === $valid || false === $valid->isValid()) {
             $this->addFlash('danger', 'Le token est invalide ou a expiré');
 
             return $this->redirectToRoute('app_home');
         }
-        
+
         $form = $this->createForm(UpdatePasswordType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
-                $user->setPassword(
-                    $userPasswordHasher->hashPassword(
-                        $user,
-                        $form->get('password')->getData()
-                    )
-                );
-                $manager->persist($user);
-                $manager->flush();
-                
-                $this->addFlash('success', 'Mot de passe modifié avec succés');
-                $this->addFlash('info', 'Veuillez vous connecter');
-                return $this->redirectToRoute('app_security_login');
+            $password = $form->get('password')->getData();
+            Assert::String($password);
 
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $password
+                )
+            );
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash('success', 'Mot de passe modifié avec succés');
+            $this->addFlash('info', 'Veuillez vous connecter');
+
+            return $this->redirectToRoute('app_security_login');
         }
 
         return $this->render('security/resetPassword.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-
 }

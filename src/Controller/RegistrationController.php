@@ -63,7 +63,13 @@ class RegistrationController extends AbstractController
                 ]
             );
 
-            return $userAuthenticator->authenticateUser(
+            Assert::notNull($userAuthenticator->authenticateUser(
+                $user,
+                $authenticator,
+                $request
+            ));
+
+            return  $userAuthenticator->authenticateUser(
                 $user,
                 $authenticator,
                 $request
@@ -127,7 +133,7 @@ class RegistrationController extends AbstractController
         $token = (string) (md5(uniqid()).md5(uniqid()));
         $validation->setToken($token);
         $validation->setCreatedAt(new \DateTime());
-        
+
         $manager->persist($validation);
         $manager->flush();
         Assert::notNull($user->getEmail());

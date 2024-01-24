@@ -15,11 +15,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
 {
-   
     #[Route('/category', name: 'app_categories')]
     public function showCategories(CategoryRepository $category): Response
     {
         $this->denyAccessUnlessGranted('CATEGORY_SHOW', $category);
+
         return $this->render('category/index.html.twig', [
             'categories'      => $category->findAll(),
         ]);
@@ -29,6 +29,7 @@ class CategoryController extends AbstractController
     public function showCategory(int $id, CategoryRepository $category): Response
     {
         $this->denyAccessUnlessGranted('CATEGORY_SHOW', $category);
+
         return $this->render('category/index.html.twig', [
             'category'        => $category,
         ]);
@@ -38,7 +39,6 @@ class CategoryController extends AbstractController
     #[Route('/category/{id<(\d+)>}/edit', name: 'app_category_edit')]
     public function form(Category $category = null, Request $request, EntityManagerInterface $manager): Response
     {
-        
         $this->denyAccessUnlessGranted('CATEGORY_ADD', $category);
         $this->denyAccessUnlessGranted('CATEGORY_EDIT', $category);
         if (!$category) {

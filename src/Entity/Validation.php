@@ -31,7 +31,6 @@ class Validation
 
     private DateTime $expiredAt;
 
-    
     public function getId(): ?int
     {
         return $this->id;
@@ -75,8 +74,7 @@ class Validation
 
     public function isValid(): bool
     {
-       
-            $this->expiredAt = ($this->getCreatedAt())->modify('+ 10800 second');
+        $this->expiredAt = $this->getCreatedAt()->modify('+ 10800 second');
 
         $now = new DateTime();
         if ($now > $this->expiredAt) {

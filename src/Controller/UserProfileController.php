@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\UpdatePasswordType;
 use App\Form\UserAvatarType;
 use App\Form\UserProfileType;
@@ -22,7 +21,7 @@ class UserProfileController extends AbstractController
     public function showProfile(Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploader, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-        
+
         $user = $this->getUser();
 
         $formProfile = $this->createForm(UserProfileType::class, $user);
@@ -34,14 +33,14 @@ class UserProfileController extends AbstractController
         $formAvatar->handleRequest($request);
 
         if ($formProfile->getClickedButton() && 'modifyProfile' === $formProfile->getClickedButton()->getName()) {
-            if ($formProfile->isSubmitted()) {
+            if ($formProfile->isSubmitted() && $formProfile->isValid()) {
                 $manager->persist($user);
                 $manager->flush();
             }
         }
 
         if ($formPassword->getClickedButton() && 'modifyPassword' === $formPassword->getClickedButton()->getName()) {
-            if ($formPassword->isSubmitted() && $formPassword->get('password') === $formPassword->get('confirmPassword')) {
+            if ($formPassword->isSubmitted() && $formPassword->isValid()) {
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(
                         $user,
@@ -53,7 +52,7 @@ class UserProfileController extends AbstractController
             }
         }
         if ($formAvatar->getClickedButton() && 'modifyAvatar' === $formAvatar->getClickedButton()->getName()) {
-            if ($formAvatar->isSubmitted()) {
+            if ($formAvatar->isSubmitted() && $formAvatar->isValid()) {
                 $avatarFile = $formAvatar->get('avatar')->getData();
 
                 $avatarFileName = $fileUploader->upload($avatarFile, '');

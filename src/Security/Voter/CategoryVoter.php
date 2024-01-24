@@ -9,15 +9,8 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-/**
- * @template TAttribute
- * @extends  Voter<string>
- * @template TSubject
- * @extends  Voter<mixed>
- */
 class CategoryVoter extends Voter
 {
-
     public const ADD = 'CATEGORY_ADD';
     public const EDIT = 'CATEGORY_EDIT';
 
@@ -48,18 +41,16 @@ class CategoryVoter extends Voter
             return false;
         }
 
-        
         /** @var Category $category */
         $category = $subject;
 
         return match($attribute) {
-            self::EDIT   => $this->canEdit($category, $user),
-            self::ADD    => $this->canAdd($category, $user),
+            self::EDIT   => $this->canEdit($category),
+            self::ADD    => $this->canAdd($category),
             default      => throw new \LogicException('This code should not be reached!')
         };
     }
 
-    
     private function canEdit(Category $category): bool
     {
         return true;

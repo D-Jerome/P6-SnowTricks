@@ -9,12 +9,6 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-/**
- * @template TAttribute
- * @extends  Voter<string>
- * @template TSubject
- * @extends  Voter<mixed>
- */
 class TrickVoter extends Voter
 {
     public const EDIT = 'TRICK_EDIT';
@@ -47,8 +41,6 @@ class TrickVoter extends Voter
         if (!$user->isActive()) {
             return false;
         }
-
-
 
         /** @var Trick $trick */
         $trick = $subject;

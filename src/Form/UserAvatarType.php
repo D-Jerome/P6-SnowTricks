@@ -16,19 +16,13 @@ class UserAvatarType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $user = $options['user'];
+        
         $builder
             ->add('avatar', FileType::class, [
                 'label' => 'Selectionner votre avatar',
 
-                // make it optional so you don't have to re-upload the PDF file
-                // every time you edit the Product details
-                'required'   => false,
-                'mapped'     => false,
-                'data_class' => null,
-
-                // unmapped fields can't define their validation using attributes
-                // in the associated entity, so you can use the PHP constraint classes
+                'required'    => false,
+                'mapped'      => false,
                 'constraints' => [
                     new File([
                         'maxSize'   => '2048k',
@@ -38,6 +32,7 @@ class UserAvatarType extends AbstractType
                             'image/webp',
                         ],
                         'mimeTypesMessage' => 'Merci de selectionner une image au format jpeg, png ou webp',
+                        'maxSizeMessage'   => 'Taille Maximale 2Mo',
                     ]),
                 ],
             ])
@@ -50,6 +45,7 @@ class UserAvatarType extends AbstractType
         $resolver->setDefaults([
             'data_class'      => User::class,
             'user'            => User::class,
+            'csrf_field_name' => '_token',
         ]);
     }
 }
