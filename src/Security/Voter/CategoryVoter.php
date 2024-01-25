@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
-use App\Entity\Trick;
+use App\Entity\Category;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class TrickVoter extends Voter
+class CategoryVoter extends Voter
 {
-    public const AUTH = 'TRICK_AUTH';
-    public const DELETE = 'TRICK_DELETE';
+    public const AUTH = 'CATEGORY_AUTH';
+    
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if (!\in_array($attribute, [self::AUTH, self::DELETE], true)) {
+        if (!\in_array($attribute, [self::AUTH], true)) {
             return false;
         }
 
-        if (!$subject instanceof Trick) {
+        if (!$subject instanceof Category) {
             return false;
         }
 
@@ -40,23 +40,19 @@ class TrickVoter extends Voter
             return false;
         }
 
-        /** @var Trick $trick */
-        $trick = $subject;
+        /** @var Category $category */
+        $category = $subject;
 
         return match($attribute) {
-            self::AUTH   => $this->canAuth($trick, $user),
-            self::DELETE => $this->canDelete($trick, $user),
+            self::AUTH   => $this->canAuth($category, $user),
+           
             default      => throw new \LogicException('This code should not be reached!')
         };
     }
 
-    private function canDelete(Trick $trick, User $user): bool
-    {
-        return $user === $trick->getUser();
-    }
 
-    private function canAuth(Trick $trick, User $user): bool
+    private function canAuth(Category $category, User $user): bool
     {
-        return $user === $trick->getUser();
+        return true;
     }
 }

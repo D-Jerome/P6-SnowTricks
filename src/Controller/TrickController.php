@@ -29,15 +29,15 @@ class TrickController extends AbstractController
         $offset = max(0, $request->query->getInt('offset', 0));
         $maxOffset = \count($commentRepository->findBy(['trick' => $trick]));
         $pagedComments = $commentRepository->getCommentPaginator($trick, $offset);
-        
+
         $comments = $trick->getComments();
         $offset = max(0, $request->query->getInt('offset', 0));
         $maxOffset = \count($commentRepository->findAll());
         if ($offset > $maxOffset) {
-            $offset = (int)(ceil($maxOffset/CommentRepository::PAGINATOR_PER_PAGE) - 1) * (CommentRepository::PAGINATOR_PER_PAGE);
+            $offset = (int) (ceil($maxOffset / CommentRepository::PAGINATOR_PER_PAGE) - 1) * CommentRepository::PAGINATOR_PER_PAGE;
         }
         $pagedComments = $commentRepository->getCommentPaginator($trick, $offset);
-        
+
         $medias = $trick->getMedias();
         $mainPicture = null;
         foreach ($medias as $media) {
@@ -75,10 +75,10 @@ class TrickController extends AbstractController
             'medias'           => $medias,
             'formComment'      => $form->createView(),
             'mainPicture'      => $mainPicture,
-            'offset'          => $offset,
-            'previous'        => $offset - CommentRepository::PAGINATOR_PER_PAGE,
-            'next'            => min(\count($pagedComments), $offset + CommentRepository::PAGINATOR_PER_PAGE),
-            'maxOffset'       => $maxOffset,
+            'offset'           => $offset,
+            'previous'         => $offset - CommentRepository::PAGINATOR_PER_PAGE,
+            'next'             => min(\count($pagedComments), $offset + CommentRepository::PAGINATOR_PER_PAGE),
+            'maxOffset'        => $maxOffset,
         ]);
     }
 
@@ -86,6 +86,7 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
     {
+        $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
         if (!$trick) {
             $trick = new Trick();
             /**
@@ -93,8 +94,6 @@ class TrickController extends AbstractController
              */
             $user = $this->getUser();
             $trick->setUser($user);
-        } else {
-            $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
         }
 
         $form = $this->createForm(TrickType::class, $trick);
