@@ -13,7 +13,6 @@ use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\TrickRepository;
 use App\Service\FileUploaderService;
-use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -86,7 +85,7 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($trick->getId()){
+            if ($trick->getId()) {
                 $trick->setUpdatedAt(new DateTimeImmutable());
             }
             foreach ($trick->getMedias() as $key => $media) {
