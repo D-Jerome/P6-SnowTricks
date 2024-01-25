@@ -30,7 +30,7 @@ class UpdatePasswordType extends AbstractType
                         new Regex([
                             'pattern'   => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#?!@$ %^&*-])[A-Za-z\d#?!@$ %^&*-]{8,}$/',
                             'match'     => true,
-                            'message'   => 'Votre mot de passe doit contenir au moins 1 chiffre, 1 Majuscule, 1 minuscule, 1 caractère special( #?!@$ %^&*- )'
+                            'message'   => 'Votre mot de passe doit contenir au moins 1 chiffre, 1 Majuscule, 1 minuscule, 1 caractère special( #?!@$ %^&*- )',
                         ]),
                     ],
                     'label' => 'Entrer votre nouveau mot de passe',

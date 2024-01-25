@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -24,7 +23,7 @@ class UserAvatarType extends AbstractType
                 'mapped'      => false,
                 'constraints' => [
                     new File([
-                        'maxSize'   => '2048k',
+                        'maxSize'   => '2Mi',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png',
