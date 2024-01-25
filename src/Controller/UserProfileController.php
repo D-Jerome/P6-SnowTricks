@@ -11,6 +11,7 @@ use App\Form\UserProfileType;
 use App\Service\FileUploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,9 @@ class UserProfileController extends AbstractController
          * @var User $user
          */
         $user = $this->getUser();
-
+        /**
+         * @var FormInterface $formProfile
+         */
         $formProfile = $this->createForm(UserProfileType::class, $user);
 
         $formPassword = $this->createForm(UpdatePasswordType::class, $user);
@@ -37,14 +40,12 @@ class UserProfileController extends AbstractController
         $formAvatar = $this->createForm(UserAvatarType::class);
 
         $formProfile->handleRequest($request);
-        $formPassword->handleRequest($request);
-        $formAvatar->handleRequest($request);
-
         if ($formProfile->isSubmitted() && $formProfile->isValid()) {
             $manager->persist($user);
             $manager->flush();
         }
 
+        $formPassword->handleRequest($request);
         if ($formPassword->isSubmitted() && $formPassword->isValid()) {
             Assert::String($formPassword->get('password')->getData());
 
@@ -57,7 +58,7 @@ class UserProfileController extends AbstractController
             $manager->persist($user);
             $manager->flush();
         }
-
+        $formAvatar->handleRequest($request);
         if ($formAvatar->isSubmitted() && $formAvatar->isValid()) {
             /**
              * @var UploadedFile $avatarFile

@@ -30,11 +30,13 @@
 
 					</li>
 					<li class="list-inline-item">
+						<small class="text-dark bg-secondary rounded px-1" title="Création">
 						<i class="fa-regular fa-calendar-plus"></i>
 						{{ trick.createdAt | date('d/m/Y') }}
-						<small>
+						</small>
+						<small class="text-secondary bg-primary rounded px-1 d-inline-block" title="Dernière Mis à jour">
 							<i class="fa-solid fa-file-pen"></i>
-							{% if trick.updatedAt is defined %}
+							{% if trick.updatedAt %}
 								{{ trick.updatedAt | date('d/m/Y') }}
 							{% endif %}
 						</small>
