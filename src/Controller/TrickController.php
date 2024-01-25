@@ -86,7 +86,7 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
     {
-        $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
+        
         if (!$trick) {
             $trick = new Trick();
             /**
@@ -95,7 +95,7 @@ class TrickController extends AbstractController
             $user = $this->getUser();
             $trick->setUser($user);
         }
-
+        $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
