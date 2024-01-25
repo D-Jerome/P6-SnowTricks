@@ -34,6 +34,7 @@
 						<div class="col-10">
 							{{ form_start(formProfile) }}
 							<div class="form-row">
+
 								<div class="form-group ">
 									{{ form_row(formProfile.username) }}
 								</div>
@@ -43,7 +44,7 @@
 							</div>
 						</div>
 						<div class="row">
-							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							<input type="hidden" name="_csrf_tokenProfile" value="{{ csrf_token('authenticate') }}">
 							<div class="form-group mt-4 text-center">
 								<div class="text-center">
 
@@ -56,28 +57,22 @@
 				</ul>
 			</div>
 
-			<!-- End Update Card -->
-			<!-- Start Update Card -->
 			<div class="card border-danger mb-3">
 				<div class="card-header border-bottom">
 					<h6 class="m-0">Modifier votre Mot de passe</h6>
 				</div>
 				<ul class="card-text">
 					<li class="list-group-item p-3">
-
 						<div class="col-10">
 							{{ form_start(formPassword) }}
 							<div class="form-row">
 								<div class="form-group ">
 									{{ form_row(formPassword.password) }}
 								</div>
-								{# <div class="form-group ">
-									{{ form_row(formPassword.confirmPassword) }}
-								</div> #}
 							</div>
 						</div>
 						<div class="row">
-							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							<input type="hidden" name="_csrf_tokenPassword" value="{{ csrf_token('authenticate') }}">
 							<div class="text-center">
 
 								{{ form_row(formPassword.modifyPassword) }}
@@ -88,8 +83,7 @@
 				</ul>
 			</div>
 
-			<!-- End Update Card -->
-			<!-- Start Update Card -->
+
 			<div class="card border-info mb-3">
 				<div class="card-header border-bottom">
 					<h6 class="m-0">Modifier votre Avatar</h6>
@@ -106,17 +100,17 @@
 						</div>
 					</div>
 					<div class="row">
-						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+						<input type="hidden" name="_csrf_tokenAvatar" value="{{ csrf_token('authenticate') }}">
 						<div class="text-center">
 
 							{{ form_row(formAvatar.modifyAvatar) }}
 						</div>
 					</div>
 
-					{{ form_end(formProfile) }}
+					{{ form_end(formAvatar) }}
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- End Update Card -->
+
 {% endblock %}

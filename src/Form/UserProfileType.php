@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,8 +16,8 @@ class UserProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username', TextType::class)
-            ->add('email', EmailType::class)
+            ->add('username', TextType::class, ['mapped' => false])
+            ->add('email', EmailType::class, ['mapped' => false])
 
             ->add('modifyProfile', SubmitType::class, ['label' => 'Modifier'])
         ;
@@ -27,9 +26,7 @@ class UserProfileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class'      => User::class,
-            'user'            => User::class,
-            'csrf_field_name' => '_token',
+            'csrf_field_name' => '_tokenProfile',
         ]);
     }
 }

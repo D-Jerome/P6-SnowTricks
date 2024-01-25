@@ -13,6 +13,7 @@ use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\TrickRepository;
 use App\Service\FileUploaderService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,9 +70,6 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
     {
-        $this->denyAccessUnlessGranted('TRICK_ADD', $trick);
-        $this->denyAccessUnlessGranted('TRICK_EDIT', $trick);
-
         if (!$trick) {
             $trick = new Trick();
             /**
@@ -80,13 +78,16 @@ class TrickController extends AbstractController
             $user = $this->getUser();
             $trick->setUser($user);
         } else {
-            $this->denyAccessUnlessGranted('TRICK_EDIT', $trick);
+            $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
         }
 
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($trick->getId()) {
+                $trick->setUpdatedAt(new DateTimeImmutable());
+            }
             foreach ($trick->getMedias() as $key => $media) {
                 if($media->getFile()) {
                     $uploadFileName = $fileUploaderService->upload($media->getFile(), '');

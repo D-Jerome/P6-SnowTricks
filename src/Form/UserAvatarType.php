@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -16,7 +15,6 @@ class UserAvatarType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        
         $builder
             ->add('avatar', FileType::class, [
                 'label' => 'Selectionner votre avatar',
@@ -25,7 +23,7 @@ class UserAvatarType extends AbstractType
                 'mapped'      => false,
                 'constraints' => [
                     new File([
-                        'maxSize'   => '2048k',
+                        'maxSize'   => '2Mi',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png',
@@ -43,9 +41,7 @@ class UserAvatarType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class'      => User::class,
-            'user'            => User::class,
-            'csrf_field_name' => '_token',
+            'csrf_field_name' => '_tokenAvatar',
         ]);
     }
 }

@@ -10,9 +10,6 @@
 			<div class="col">
 				<form action="{{ path('app_security_login') }}" method="post">
 					<div id="form">
-						{% if error %}
-							<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-						{% endif %}
 
 						{% if app.user %}
 							<div class="mb-3">
@@ -33,12 +30,11 @@
 						</div>
 						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }} ">
 					</div>
-					<div class="row mt-3 text-end">
-						<a href="{{ path('app_security_forgot_password') }}" class="">Mot de passe oublié?</a>
+					<div class="d-grid justify-content-end m-2">
+						<a href="{{ path('app_security_forgot_password') }}" class="btn btn-outline-danger" >Mot de passe oublié?</a>
 					</div>
 					<button type="submit" class="btn btn-success mt-2">Me connecter</button>
-					{# <a href="{{ path('app_forgot_password_request')}}" class="btn btn-reset">Reset your password</a> #}
-
+					
 				</form>
 
 

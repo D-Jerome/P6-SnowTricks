@@ -91,7 +91,8 @@ class RegistrationController extends AbstractController
              */
             $user = $valid->getUser();
         }
-        if(null === $valid || false === $valid->isValid() || true === $user->isActive()) {
+
+        if(null === $valid || false === $valid->isValid()) {
             $this->addFlash('danger', 'Le token est invalide ou a expiré');
 
             return $this->redirectToRoute('app_home');
@@ -124,7 +125,7 @@ class RegistrationController extends AbstractController
         if($user->isActive()) {
             $this->addFlash('warning', 'Cet utilisateur est déjà activé');
 
-            return $this->redirectToRoute('profile_index');
+            return $this->redirectToRoute('app_home');
         }
 
         $validation = $user->getValidation();

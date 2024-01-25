@@ -63,6 +63,9 @@ class Trick
 
     private ?string $mainPicture = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     /**
      * Constructor
      */
@@ -223,6 +226,18 @@ class Trick
     public function setMainPicture(string $mainPicture): static
     {
         $this->mainPicture = $mainPicture;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
