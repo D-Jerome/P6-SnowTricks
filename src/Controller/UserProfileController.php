@@ -25,7 +25,6 @@ class UserProfileController extends AbstractController
     public function showProfile(Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploader, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-
         /**
          * @var User $user
          */
@@ -33,19 +32,32 @@ class UserProfileController extends AbstractController
         /**
          * @var FormInterface $formProfile
          */
-        $formProfile = $this->createForm(UserProfileType::class, $user);
+        $formProfile = $this->createForm(UserProfileType::class);
 
-        $formPassword = $this->createForm(UpdatePasswordType::class, $user);
+        $formPassword = $this->createForm(UpdatePasswordType::class);
 
         $formAvatar = $this->createForm(UserAvatarType::class);
 
+        $formProfile->get('username')->setData($user->getUsername());
+        $formProfile->get('email')->setData($user->getEmail());
+
         $formProfile->handleRequest($request);
+
         if ($formProfile->isSubmitted() && $formProfile->isValid()) {
+            Assert::string($formProfile->get('username')->getData());
+            if ($user->getUsername() !== $formProfile->get('username')->getData()) {
+                $user->setUsername($formProfile->get('username')->getData());
+            }
+            Assert::string($formProfile->get('email')->getData());
+            if ($user->getEmail() !== $formProfile->get('email')->getData()) {
+                $user->setEmail($formProfile->get('email')->getData());
+            }
             $manager->persist($user);
             $manager->flush();
         }
 
         $formPassword->handleRequest($request);
+
         if ($formPassword->isSubmitted() && $formPassword->isValid()) {
             Assert::String($formPassword->get('password')->getData());
 

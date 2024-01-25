@@ -42,9 +42,7 @@ class UserAvatarType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class'      => User::class,
-            'user'            => User::class,
-            'csrf_field_name' => '_token',
+            'csrf_field_name' => '_tokenAvatar',
         ]);
     }
 }
