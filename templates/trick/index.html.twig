@@ -31,8 +31,8 @@
 					</li>
 					<li class="list-inline-item">
 						<small class="text-dark bg-secondary rounded px-1" title="Création">
-						<i class="fa-regular fa-calendar-plus"></i>
-						{{ trick.createdAt | date('d/m/Y') }}
+							<i class="fa-regular fa-calendar-plus"></i>
+							{{ trick.createdAt | date('d/m/Y') }}
 						</small>
 						<small class="text-secondary bg-primary rounded px-1 d-inline-block" title="Dernière Mis à jour">
 							<i class="fa-solid fa-file-pen"></i>
@@ -52,14 +52,18 @@
 					</li>
 				</ul>
 				<hr>
-				<h4 class="card-title">
+				<h2 class="card-title text-center">
 					<strong>{{ trick.name }}</strong>
-				</h4>
+				</h2>
 				<hr>
 				<section>
-					<div
-						class="container col-8 d-flex justify-content-around flex-wrap">
-						{# carrousel bootstrap #}
+					<div class="text-center p-3">
+						<button class="btn btn-primary" type="button" onclick="toggleMedias()">
+							Voir / Cacher les Medias
+						</button>
+					</div>
+					<div id="medias" class="container col-8  d-none d-flex justify-content-around flex-wrap">
+
 						<div id="carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
 							<div class="carousel-indicators">
 								{%  set isFirst = true %}
@@ -116,10 +120,10 @@
 					{% if app.user and app.user.active %}
 						{{ form_start(formComment) }}
 						{{ form_row(formComment.content, {
-                				'label' : 'Ajouter une commentaire',
-                				'attr'  : {'placeholder' : 'Entrer votre commentaire'},
-        						} 
-        					) }}
+							'label' : 'Ajouter une commentaire',
+							'attr'  : {'placeholder' : 'Entrer votre commentaire'},
+							} 
+						) }}
 						{{ form_end(formComment)}}
 					{% else %}
 						<div class="text-center my-3 p-3">
@@ -134,7 +138,8 @@
 					<div class="card rounded shadow-lg text-left p-5 mb-5 ">
 						<div class="entry-comments">
 							<h6 class="mb-5">{{ trick.comments | length }}
-								Commentaire{%if ( trick.comments | length ) > 1 %}s{%endif%}</h6>
+								Commentaire
+							{%if ( trick.comments | length ) > 1 %}s{%endif%}</h6>
 							<ul class="entry-comments-list list-unstyled">
 								{% for comment in comments %}
 									<li>
@@ -154,7 +159,38 @@
 								{% endfor %}
 							</ul>
 						</div>
+						<div class="container text-center">
+		<div class="row d-grid justify-content-center">
+			<div class="col">
+				<ul class="pagination pagination-lg">
+
+					<li class="page-item {% if  previous  < 0 %}disabled{% endif %}">
+						<a class="page-link" href="{{ path('app_trick', {'slug' : trick.slug , 'offset' : previous }) }}#comments">&laquo;</a>
+					</li>
+
+					<li class="page-item">
+						<a class="page-link {% if  next  >= maxOffset %}disabled{% endif %}" href="{{ path('app_trick', {'slug' : trick.slug , 'offset' : next }) }}#comments">&raquo;</a>
+					</li>
+				</ul>
+			</div>
+		</div>
 					</div>
+					
 				</div>
-			</section>
-		{% endblock %}
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	</section>
+{% endblock %}
+
+
+{% block javascripts %}
+	<script>
+		function toggleMedias() {
+var element = document.getElementById("medias");
+element.classList.toggle("d-none");
+}
+	</script>
+{% endblock %}

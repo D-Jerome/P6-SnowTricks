@@ -74,7 +74,7 @@ class AppFixtures extends Fixture
                         ->setUser($user)
                     ;
                     $this->em->persist($trick);
-                    for ($h = 0; $h < 5; ++$h) {
+                    for ($h = 0; $h < 15; ++$h) {
                         $comment = new Comment();
                         $comment->setContent($faker->sentence(8, true))
                             ->setTrick($trick)

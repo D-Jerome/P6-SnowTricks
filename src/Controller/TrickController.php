@@ -11,6 +11,7 @@ use App\Entity\TypeMedia;
 use App\Entity\User;
 use App\Form\CommentType;
 use App\Form\TrickType;
+use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
 use App\Service\FileUploaderService;
 use DateTimeImmutable;
@@ -23,9 +24,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrickController extends AbstractController
 {
     #[Route('/trick/{slug<((\w+)-){0,}(\w+)>}/show', name: 'app_trick')]
-    public function showTrick(string $slug, Trick $trick, TrickRepository $trickRepository, Request $request, EntityManagerInterface $manager): Response
+    public function showTrick(string $slug, Trick $trick, TrickRepository $trickRepository, CommentRepository $commentRepository, Request $request, EntityManagerInterface $manager): Response
     {
+        $offset = max(0, $request->query->getInt('offset', 0));
+        $maxOffset = \count($commentRepository->findBy(['trick' => $trick]));
+        $pagedComments = $commentRepository->getCommentPaginator($trick, $offset);
+        
         $comments = $trick->getComments();
+        $offset = max(0, $request->query->getInt('offset', 0));
+        $maxOffset = \count($commentRepository->findAll());
+        if ($offset > $maxOffset) {
+            $offset = (int)(ceil($maxOffset/CommentRepository::PAGINATOR_PER_PAGE) - 1) * (CommentRepository::PAGINATOR_PER_PAGE);
+        }
+        $pagedComments = $commentRepository->getCommentPaginator($trick, $offset);
+        
         $medias = $trick->getMedias();
         $mainPicture = null;
         foreach ($medias as $media) {
@@ -59,10 +71,14 @@ class TrickController extends AbstractController
 
         return $this->render('trick/index.html.twig', [
             'trick'            => $trickRepository->findOneBy(['slug' => $slug]),
-            'comments'         => $comments,
+            'comments'         => $pagedComments,
             'medias'           => $medias,
             'formComment'      => $form->createView(),
             'mainPicture'      => $mainPicture,
+            'offset'          => $offset,
+            'previous'        => $offset - CommentRepository::PAGINATOR_PER_PAGE,
+            'next'            => min(\count($pagedComments), $offset + CommentRepository::PAGINATOR_PER_PAGE),
+            'maxOffset'       => $maxOffset,
         ]);
     }
 
