@@ -10,6 +10,7 @@ use App\Entity\Trick;
 use App\Entity\TypeMedia;
 use App\Entity\User;
 use App\Form\CommentType;
+use App\Form\MediaType;
 use App\Form\TrickType;
 use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
@@ -86,7 +87,6 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
     {
-        
         if (!$trick) {
             $trick = new Trick();
             /**
@@ -97,6 +97,7 @@ class TrickController extends AbstractController
         }
         $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
         $form = $this->createForm(TrickType::class, $trick);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

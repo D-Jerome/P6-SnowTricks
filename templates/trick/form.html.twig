@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
 
-
 {% block title %}Trick
 {% endblock %}
 
@@ -36,82 +35,81 @@
 
 	{{ form_widget(formTrick._token) }}
 	{{ form_errors(formTrick) }}
-	<div class="d-grid col-6 mx-auto mb-2">
-		<button type="button" class="btn btn-outline-secondary btn-new" data-collection-holder-class="medias">Ajouter un nouveau media</button>
+	<div class="d-flex col-4 gap-2 mx-auto mb-2 flex-wrap justify-content-center">
+		<button type="button" class="btn btn-outline-primary btn-new" data-collection-holder-class="medias">Ajouter une image</button>
+		<button type="button" class="btn btn-outline-dark btn-new-video" data-collection-holder-class="medias">Ajouter une vidéo</button>
 	</div>
-	<ul id="medias" class="gap-2 col-12 medias d-flex p-2 justify-content-around flex-wrap" data-prototype="{{ form_widget(formTrick.medias.vars.prototype)|e("html_attr") }}" data-index="{{ formTrick.medias|length > 0 ? formTrick.medias|last.vars.name + 1 : 0 }}" >
+	<ul id="medias" class="gap-2 col-12 medias d-flex p-2 justify-content-around flex-wrap" data-prototype="{{ form_widget(formTrick.medias.vars.prototype)|e("html_attr") }}" data-index="{{ formTrick.medias|length > 0 ? formTrick.medias|last.vars.name + 1 : 0 }}">
 		{% for media in formTrick.medias %}
-			<dd class="card border-info col-lg-4 col-sm-10" name="typeMedia">
-
-				<div class="card-header ">Image</div>
+			{% if field_value(media.typeMedia) == "Image" %}
+				<dd class="card border-info col-lg-4 col-sm-10" name="typeMedia">
+			{% else %}
+				<dd class="card border-light col-lg-4 col-sm-10" name="typeMedia">
+			{% endif %}
+				<div class="card-header ">{{ field_value(media.typeMedia) }}</div>
 				<div class="card-body ">
-
-
-					{{ form_row(media.path) }}
-					<p class="card-text">{{ form_row(media.typeMedia) }}
-
-						{{ form_row(media.file) }}</p>
-
+					<span class="d-none">{{ form_row(media.path) }}</span>
+					<img src="/uploads/{{ field_value(media.path) }}" class="w-100">
+					<p class="card-text">
+						<span class="d-none">{{ form_widget(media.typeMedia) }}</span>
+						{{ field_value(media.file) }}
+					</p>
 				</div>
-
 			</dd>
-
-		{% endfor %}
+			{% endfor %}
 	</ul>
 
-	{{ form_errors(formTrick.medias) }}
+		{{ form_errors(formTrick.medias) }}
 
-	<div class="d-grid gap-2 col-10 mx-auto">
-		<button class="btn btn-primary ">
-			{% if trick.id %}
-				Modifier votre Trick
-			{% else %}
-				Créer votre Trick
-			{% endif %}
-		</button>
-	</div>
-	{{ form_end(formTrick, {render_rest: false}) }}
-{% endblock %}
 
-{% block javascripts %}
-	<script>
+		<div class="d-grid gap-2 col-10 mx-auto">
+			<button class="btn btn-primary ">
+				{% if trick.id %}
+					Modifier votre Trick
+				{% else %}
+					Créer votre Trick
+				{% endif %}
+			</button>
+		</div>
+		{{ form_end(formTrick, {render_rest: false}) }}
+	{% endblock %}
 
-		window.addEventListener('load', () => {
-	function getId() {
-const listtypemedias = document.getElementsByTagName("typeMediaClass");
-const buttonPressed = e => {
- return e.target.id
-alert(e.target.id);  // Get ID of Clicked Element
+	{% block javascripts %}
+		<script>
+
+			window.addEventListener('load', () => {
+
+const addFormVideoToCollection = (e) => {
+const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+
+const item = document.createElement('dd');
+item.classList.add("col-lg-4");
+item.classList.add("col-sm-10");
+item.classList.add("card");
+item.classList.add("border-dark");
+item.classList.add("videos");
+
+
+const header = document.createElement('div');
+header.classList.add("card-header");
+header.innerHTML = 'Nouvelle Video';
+item.appendChild(header);
+
+const body = document.createElement('div');
+body.classList.add("card-body");
+item.appendChild(body);
+
+const text = document.createElement('p');
+text.classList.add("card-text");
+text.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, collectionHolder.dataset.index);
+body.appendChild(text);
+
+
+collectionHolder.appendChild(item);
+collectionHolder.dataset.index ++;
+addMediaFormDeleteLink(item);
 }
-
-}
-
-
-let typeMedia = document.querySelector("#" + getId());
-console.log()
-if (typeMedia != null) {
-
-
-typeMedia.addEventListener("click", function () {
-
-let form = this.closest("form");
-let data = this.name + "=" + this.value;
-
-fetch(form.action, {
-method: form.getAttribute("method"),
-body: data,
-header: {
-"Content-Type": "application/x-www-form-urlencoded; charset:utf-8"
-}
-})
-// .then(response => response.text())
-// .then(html =>{
-// let content = document.createElement("html");
-// content.innerHTML =html;
-// let ne
-})
-}
-
 
 const addFormToCollection = (e) => {
 const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
@@ -121,8 +119,7 @@ item.classList.add("col-lg-4");
 item.classList.add("col-sm-10");
 item.classList.add("card");
 item.classList.add("border-primary");
-item.classList.add("typemedia");
-
+item.classList.add("images");
 
 
 const header = document.createElement('div');
@@ -167,8 +164,85 @@ addMediaFormDeleteLink(media)
 document.querySelectorAll('.btn-new').forEach(btn => {
 btn.addEventListener("click", addFormToCollection)
 });
-})
-	</script>
 
-{% endblock %}
+document.querySelectorAll('.btn-new-video').forEach(btn => {
+btn.addEventListener("click", addFormVideoToCollection)
+});
 
+
+// // "Add a Tag" link
+// var $addImagesLink = $('<a href="#" class="add_Images_link">Add a Image</a>');
+// var $newImageLinkLi = $('<li></li>').append($addImagesLink);
+
+// // "Add a Person" link
+// var $addVideosLink = $('<a href="#" class="add_Videos_link">Add a Video</a>');
+// var $newVideoLinkLi = $('<li></li>').append($addVideosLink);
+
+
+// jQuery(document).ready(function() {
+
+//     //-- Tags --
+
+//     // Get the ul that holds the collection of tags
+//     $imagesCollectionHolder = $('ul.images');
+//     // add a delete link to all of the existing tag form li elements
+//     $imagesCollectionHolder.find('li').each(function() {
+//         addFormDeleteLink($(this), 'delete this image');
+//     });
+//     // add the "add a tag" anchor and li to the tags ul
+//     $imagesCollectionHolder.append($newImageLinkLi);
+//     // count the current form inputs we have (e.g. 2), use that as the new
+//     // index when inserting a new item (e.g. 2)
+//     $imagesCollectionHolder.data('index', $imagesCollectionHolder.find(':input').length);
+//     $addImagesLink.on('click', function(e) {
+//         // prevent the link from creating a "#" on the URL
+//         e.preventDefault();
+//         // add a new tag form (see next code block)
+//         addForm($imagesCollectionHolder, $newImageLinkLi, 'delete this image');
+//     });
+
+//     //-- Persons --
+
+//     $videosCollectionHolder = $('ul.videos');
+//     $videosCollectionHolder.find('li').each(function() {
+//         addFormDeleteLink($(this), 'delete this video');
+//     });
+//     $videosCollectionHolder.append($newVideoLinkLi);
+//     $videosCollectionHolder.data('index', $videosCollectionHolder.find(':input').length);
+//     $addPersonsLink.on('click', function(e) {
+//         e.preventDefault();
+//         addForm($videosCollectionHolder, $newVideoLinkLi, 'delete this video');
+//     });
+// });
+
+// function addFormDeleteLink($formLi, $anchor) {
+//     var $removeFormA = $('<a href="#">' + $anchor + '</a>');
+//     $formLi.append($removeFormA);
+//     $removeFormA.on('click', function(e) {
+//         // prevent the link from creating a "#" on the URL
+//         e.preventDefault();
+//         // remove the li for the form
+//         $formLi.remove();
+//     });
+// }
+
+// function addForm($collectionHolder, $newLinkLi, $deleteText) {
+//     // Get the data-prototype explained earlier
+//     var prototype = $collectionHolder.data('prototype');
+//     // get the new index
+//     var index = $collectionHolder.data('index');
+//     // Replace '__name__' in the prototype's HTML to
+//     // instead be a number based on how many items we have
+//     var newForm = prototype.replace(/__name__/g, index);
+//     // increase the index with one for the next item
+//     $collectionHolder.data('index', index + 1);
+//     // Display the form in the page in an li, before the "Add a tag/person" link li
+//     var $newFormLi = $('<li></li>').append(newForm);
+//     // add a delete link to the new form
+//     addFormDeleteLink($newFormLi, $deleteText);
+//     $newLinkLi.before($newFormLi);
+// }
+});
+		</script>
+
+	{% endblock %}

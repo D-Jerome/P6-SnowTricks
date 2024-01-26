@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -23,14 +24,19 @@ class MediaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // $mediaType = $options['mediaType'];
+
+        // if ('Image' === $mediaType || !$mediaType) {
         $builder
-            ->add('typeMedia', EnumType::class, [
-                'label'       => false,
-                'placeholder' => 'Choisir un type de média',
-                'class'       => TypeMedia::class,
-                'required'    => false,
-                // 'mapped'      => false,
-            ])
+
+        ->add('typeMedia', EnumType::class, [
+            'label'       => false,
+            'class'       => TypeMedia::class,
+            'required'    => false,
+            
+            // 'mapped'      => false,
+        ])
+
             ->add('file', FileType::class, [
                 'label'       => false,
                 'required'    => false,
@@ -40,42 +46,32 @@ class MediaType extends AbstractType
                 'constraints' => [
                     new File([
                         'maxSize'   => '2048k',
+                        'maxSizeMessage' => 'La taille maximale ne doit pas dépassée 2Mo',
                         'mimeTypes' => [
                             'image/*',
                         ],
                         'mimeTypesMessage' => 'Merci de sélectionner une Image Valide de 2Mo maximun et au format(jpg, jpeg, webp, png)',
                     ])],
             ])
-            ->add('path', HiddenType::class, [
+            ->add('path', TextType::class, [
+                
             ])
         ;
-
-        // $formModifier = static function (FormInterface $form, TypeMedia $typeMedia = null): void {
-        //     if('Picture' !== $typeMedia && $typeMedia) {
-        //         $form->add('path', TextType::class, [
-        //             'required'    => false,
-        //             'mapped'      => false,
-        //         ]);
-        //         $form->remove('file');
-        //     }
-        // };
-
-        // $builder->addEventListener(
-        //     FormEvents::POST_SET_DATA,
-        //     static function (FormEvent $event) use ($formModifier): void {
-        //         $typeMedia = $event->getForm()->getData();
-        //         if ($typeMedia) {
-        //             Assert::isInstanceOf($typeMedia, TypeMedia::class);
-        //             Assert::notNull($event->getForm()->getParent());
-        //             $formModifier($event->getForm()->getParent(), $typeMedia);
-        //         }
-        //     });
     }
+
+    // if ('Video' === $mediaType) {
+    //     $builder
+
+    //         ->add('path', UrlType::class, [
+    //             'mapped'      => false,
+    //         ])
+    //     ;
+    // }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Media::class,
+           'data_class' => Media::class,
         ]);
     }
-}
+}  
