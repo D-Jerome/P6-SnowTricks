@@ -79,8 +79,9 @@ Une base de données Mysql pour le stockage des données.
 ----------------------------------------------------------------------------------------
 ## Librairies utilisées
 
-    -Twig + 
-    -
+    - Webmozart
+    - Phpstan
+    - Mailer
 ----------------------------------------------------------------------------------------
 ## Auteur
 
