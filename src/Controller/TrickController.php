@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Webmozart\Assert\Assert;
 
 class TrickController extends AbstractController
 {
@@ -70,15 +71,16 @@ class TrickController extends AbstractController
         }
 
         return $this->render('trick/index.html.twig', [
-            'trick'            => $trickRepository->findOneBy(['slug' => $slug]),
-            'comments'         => $pagedComments,
-            'medias'           => $medias,
-            'formComment'      => $form->createView(),
-            'mainPicture'      => $mainPicture,
-            'offset'           => $offset,
-            'previous'         => $offset - CommentRepository::PAGINATOR_PER_PAGE,
-            'next'             => min(\count($pagedComments), $offset + CommentRepository::PAGINATOR_PER_PAGE),
-            'maxOffset'        => $maxOffset,
+            'trick'              => $trickRepository->findOneBy(['slug' => $slug]),
+            'comments'           => $pagedComments,
+            'medias'             => $medias,
+            'formComment'        => $form->createView(),
+            'mainPicture'        => $mainPicture,
+            'offset'             => $offset,
+            'previous'           => $offset - CommentRepository::PAGINATOR_PER_PAGE,
+            'next'               => min(\count($pagedComments), $offset + CommentRepository::PAGINATOR_PER_PAGE),
+            'maxOffset'          => $maxOffset,
+            'TypeMediaEnumImage' => TypeMedia::Image,
         ]);
     }
 
@@ -86,7 +88,6 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
     {
-        $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
         if (!$trick) {
             $trick = new Trick();
             /**
@@ -95,23 +96,40 @@ class TrickController extends AbstractController
             $user = $this->getUser();
             $trick->setUser($user);
         }
-
+        $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
         $form = $this->createForm(TrickType::class, $trick);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($trick->getId()) {
                 $trick->setUpdatedAt(new DateTimeImmutable());
             }
+
             foreach ($trick->getMedias() as $key => $media) {
-                if($media->getFile()) {
-                    $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
-                    $media->setDescription($media->getFile()->getClientOriginalName());
-                    $media->setPath($uploadFileName);
-                    $manager->persist($media);
+                if (TypeMedia::Image === $media->getTypeMedia()) {
+                    if($media->getFile()) {
+                        $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
+                        $media->setDescription($media->getFile()->getClientOriginalName());
+                        $media->setPath($uploadFileName);
+                        $manager->persist($media);
+                    }
+                } else {
+                    Assert::notNull($media->getPath());
+
+                    if(preg_match_all('/<iframe[^>]*>(?:.*?)<\/iframe>/', $media->getPath(), $matches)) {
+                        $path = (string) str_replace('autoplay=1', '', $matches[0][0]);
+                        $path = str_replace('position:absolute;', '', $path);
+                        $media->setDescription('video');
+                        $media->setPath($path);
+                        $manager->persist($media);
+                    } else {
+                        $this->addFlash('danger', 'le lien de la video ne correspond pas a un lien integré (embed');
+
+                        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
+                    }
                 }
             }
-
             $manager->persist($trick);
             $manager->flush();
 

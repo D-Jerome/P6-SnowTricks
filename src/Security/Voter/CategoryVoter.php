@@ -12,12 +12,12 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class CategoryVoter extends Voter
 {
     public const AUTH = 'CATEGORY_AUTH';
-    
+    public const EDIT = 'CATEGORY_EDIT';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if (!\in_array($attribute, [self::AUTH], true)) {
+        if (!\in_array($attribute, [self::AUTH, self::EDIT], true)) {
             return false;
         }
 
@@ -35,8 +35,8 @@ class CategoryVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
-        
-        if ($user->isActive() === false) {
+
+        if (false === $user->isActive()) {
             return false;
         }
 
@@ -45,11 +45,10 @@ class CategoryVoter extends Voter
 
         return match($attribute) {
             self::AUTH   => $this->canAuth($category, $user),
-           
+
             default      => throw new \LogicException('This code should not be reached!')
         };
     }
-
 
     private function canAuth(Category $category, User $user): bool
     {

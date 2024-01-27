@@ -21,13 +21,13 @@ use Doctrine\Persistence\ManagerRegistry;
 class CommentRepository extends ServiceEntityRepository
 {
     public const PAGINATOR_PER_PAGE = 5;
-    
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Comment::class);
     }
 
-    public function getCommentPaginator( Trick $trick, int $offset): Paginator
+    public function getCommentPaginator(Trick $trick, int $offset): Paginator
     {
         $query = $this->createQueryBuilder('c')
             ->andWhere('c.trick = :trick')

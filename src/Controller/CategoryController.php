@@ -16,18 +16,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategoryController extends AbstractController
 {
     #[Route('/category', name: 'app_categories')]
-    public function showCategories(CategoryRepository $category): Response
+    public function showCategories(CategoryRepository $categoryRepository): Response
     {
-        $this->denyAccessUnlessGranted('CATEGORY_AUTH', $category);
+        $categories = $categoryRepository->findAll();
+        foreach ($categories as $category) {
+            $this->denyAccessUnlessGranted('CATEGORY_AUTH', $category);
+            break;
+        }
+
         return $this->render('category/index.html.twig', [
-            'categories'      => $category->findAll(),
+            'categories'      => $categoryRepository->findAll(),
         ]);
     }
 
     #[Route('/category/{id<(\d+)>}', name: 'app_category')]
-    public function showCategory(int $id, CategoryRepository $category): Response
+    public function showCategory(int $id, Category $category): Response
     {
-        $this->denyAccessUnlessGranted('CATEGORY_AUTH',$category);
+        $this->denyAccessUnlessGranted('CATEGORY_AUTH', $category);
+
         return $this->render('category/index.html.twig', [
             'category'        => $category,
         ]);
@@ -37,7 +43,7 @@ class CategoryController extends AbstractController
     #[Route('/category/{id<(\d+)>}/edit', name: 'app_category_edit')]
     public function form(Category $category = null, Request $request, EntityManagerInterface $manager): Response
     {
-        $this->denyAccessUnlessGranted('CATEGORY_AUTH', $category);
+        $this->denyAccessUnlessGranted('CATEGORY_EDIT', $category);
         if (!$category) {
             $category = new Category();
         }

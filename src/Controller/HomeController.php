@@ -20,10 +20,10 @@ class HomeController extends AbstractController
         $offset = max(0, $request->query->getInt('offset', 0));
         $maxOffset = \count($trickRepository->findAll());
         if ($offset > $maxOffset) {
-            $offset = (int)(ceil($maxOffset/TrickRepository::PAGINATOR_PER_PAGE) - 1) * (TrickRepository::PAGINATOR_PER_PAGE);
+            $offset = (int) (ceil($maxOffset / TrickRepository::PAGINATOR_PER_PAGE) - 1) * TrickRepository::PAGINATOR_PER_PAGE;
         }
         $pagedTricks = $trickRepository->getTrickPaginator($offset);
-        
+
         /**
          * @var Trick $trick
          */

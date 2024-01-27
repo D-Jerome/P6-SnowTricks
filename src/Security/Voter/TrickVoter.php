@@ -35,8 +35,8 @@ class TrickVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
-        
-        if ($user->isActive() === false) {
+
+        if (false === $user->isActive()) {
             return false;
         }
 
