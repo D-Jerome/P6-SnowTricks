@@ -9,16 +9,11 @@ use App\Entity\TypeMedia;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
-use Webmozart\Assert\Assert;
 
 class MediaType extends AbstractType
 {
@@ -28,14 +23,13 @@ class MediaType extends AbstractType
 
         // if ('Image' === $mediaType || !$mediaType) {
         $builder
+            ->add('typeMedia', EnumType::class, [
+                'label'       => false,
+                'class'       => TypeMedia::class,
+                'required'    => false,
 
-        ->add('typeMedia', EnumType::class, [
-            'label'       => false,
-            'class'       => TypeMedia::class,
-            'required'    => false,
-            
-            // 'mapped'      => false,
-        ])
+                // 'mapped'      => false,
+            ])
 
             ->add('file', FileType::class, [
                 'label'       => false,
@@ -45,16 +39,15 @@ class MediaType extends AbstractType
                 ],
                 'constraints' => [
                     new File([
-                        'maxSize'   => '2048k',
+                        'maxSize'        => '2048k',
                         'maxSizeMessage' => 'La taille maximale ne doit pas dépassée 2Mo',
-                        'mimeTypes' => [
+                        'mimeTypes'      => [
                             'image/*',
                         ],
                         'mimeTypesMessage' => 'Merci de sélectionner une Image Valide de 2Mo maximun et au format(jpg, jpeg, webp, png)',
                     ])],
             ])
             ->add('path', TextType::class, [
-                
             ])
         ;
     }
@@ -71,7 +64,7 @@ class MediaType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-           'data_class' => Media::class,
+            'data_class' => Media::class,
         ]);
     }
-}  
+}

@@ -20,7 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
 class TrickRepository extends ServiceEntityRepository
 {
     public const PAGINATOR_PER_PAGE = 15;
-    
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Trick::class);

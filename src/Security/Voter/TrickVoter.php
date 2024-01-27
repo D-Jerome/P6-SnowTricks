@@ -16,15 +16,15 @@ class TrickVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        
         // if the attribute isn't one we support, return false
         if (!\in_array($attribute, [self::AUTH, self::DELETE], true)) {
             return false;
         }
-        
+
         if (!$subject instanceof Trick) {
             return false;
         }
+
         return true;
     }
 

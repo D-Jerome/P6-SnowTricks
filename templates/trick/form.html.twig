@@ -43,21 +43,31 @@
 		{% for media in formTrick.medias %}
 			{% if field_value(media.typeMedia) == "Image" %}
 				<dd class="card border-info col-lg-4 col-sm-10" name="typeMedia">
+					<div class="card-header ">{{ field_value(media.typeMedia) }}</div>
+					<div class="card-body ">
+						<span class="d-none">{{ form_row(media.path) }}</span>
+						<img src="/uploads/{{ field_value(media.path) }}" class="w-100">
+						<p class="card-text">
+							<span class="d-none">{{ form_widget(media.typeMedia) }}</span>
+							{{ field_value(media.file) }}
+						</p>
+					</div>
+				</dd>
 			{% else %}
 				<dd class="card border-light col-lg-4 col-sm-10" name="typeMedia">
-			{% endif %}
-				<div class="card-header ">{{ field_value(media.typeMedia) }}</div>
-				<div class="card-body ">
-					<span class="d-none">{{ form_row(media.path) }}</span>
-					<img src="/uploads/{{ field_value(media.path) }}" class="w-100">
-					<p class="card-text">
-						<span class="d-none">{{ form_widget(media.typeMedia) }}</span>
-						{{ field_value(media.file) }}
-					</p>
-				</div>
-			</dd>
+
+					<div class="card-header ">{{ field_value(media.typeMedia) }}</div>
+					<div class="card-body ">
+						<span class="d-none">{{ form_row(media.path) }}</span>
+							<span class="ratio ratio-16x9">{{ field_value(media.path)|raw }}</span>
+						<p class="card-text">
+							<span class="d-none">{{ form_widget(media.typeMedia) }}</span>
+							{{ field_value(media.file) }}
+						</p>
+					</div>
+				{% endif %}
 			{% endfor %}
-	</ul>
+		</ul>
 
 		{{ form_errors(formTrick.medias) }}
 

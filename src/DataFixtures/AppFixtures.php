@@ -102,6 +102,16 @@ class AppFixtures extends Fixture
                         ;
                         $this->em->persist($media);
                     }
+
+                    for($k = 0; $k < random_int(0, 2); ++$k) {
+                        $media = new Media();
+                        $media->setDescription($faker->sentence(3, true))
+                            ->setPath('https://www.youtube.com/embed/ivO_fl0HrXs?si=S5MZuQ1NHOUZEend')
+                            ->setTypeMedia(TypeMedia::Video)
+                            ->setTrick($trick)
+                        ;
+                        $this->em->persist($media);
+                    }
                 }
             }
         }

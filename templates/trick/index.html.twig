@@ -64,7 +64,7 @@
 					</div>
 					<div id="medias" class="container col-8  d-none d-flex justify-content-around flex-wrap">
 
-						<div id="carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+						<div id="carousel" class="carousel slide carousel-fade" >
 							<div class="carousel-indicators">
 								{%  set isFirst = true %}
 								{% for media in medias %}
@@ -85,7 +85,11 @@
 										{% else %}
 											<div class="carousel-item">
 											{% endif %}
-											<img src="/uploads/{{ media.path }}" class="d-block w-100" alt="">
+											{% if (media.typeMedia) == (TypeMediaEnumImage) %}
+												<img src="/uploads/{{ media.path }}" class="d-block w-100" alt="">
+											{% else %}
+												{{ media.path|raw }}
+											{% endif %}
 										</div>
 										{% set isFirst = false %}
 									{% endfor %}
@@ -139,49 +143,49 @@
 						<div class="entry-comments">
 							<h6 class="mb-5">{{ trick.comments | length }}
 								Commentaire
-							{%if ( trick.comments | length ) > 1 %}s{%endif%}</h6>
-							<ul class="entry-comments-list list-unstyled">
-								{% for comment in comments %}
-									<li>
-										<div class="d-flex mt-3 pb-2  border-bottom ">
-											<img src="/uploads/{{ comment.user.avatar }}" class=" rounded" style="witdh: 60px; height: 60px;" alt="{{ comment.user.username }}">
-											<div class="ml-4">
-												<span class="display-6">
-													{{ comment.user.username }}
-												</span>
-												<span class="text-muted">Le
-													{{ comment.createdAt | date("d/m/Y à h:i")}}
-												</span>
-												<p class="mt-2">{{ comment.content }}</p>
+								{%if ( trick.comments | length ) > 1 %}s{%endif%}</h6>
+								<ul class="entry-comments-list list-unstyled">
+									{% for comment in comments %}
+										<li>
+											<div class="d-flex mt-3 pb-2  border-bottom ">
+												<img src="/uploads/{{ comment.user.avatar }}" class=" rounded" style="witdh: 60px; height: 60px;" alt="{{ comment.user.username }}">
+												<div class="ml-4">
+													<span class="display-6">
+														{{ comment.user.username }}
+													</span>
+													<span class="text-muted">Le
+														{{ comment.createdAt | date("d/m/Y à h:i")}}
+													</span>
+													<p class="mt-2">{{ comment.content }}</p>
+												</div>
 											</div>
-										</div>
-									</li>
-								{% endfor %}
-							</ul>
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
+							<div class="container text-center">
+								<div class="row d-grid justify-content-center">
+									<div class="col">
+										<ul class="pagination pagination-lg">
+
+											<li class="page-item {% if  previous  < 0 %}disabled{% endif %}">
+												<a class="page-link" href="{{ path('app_trick', {'slug' : trick.slug , 'offset' : previous }) }}#comments">&laquo;</a>
+											</li>
+
+											<li class="page-item">
+												<a class="page-link {% if  next  >= maxOffset %}disabled{% endif %}" href="{{ path('app_trick', {'slug' : trick.slug , 'offset' : next }) }}#comments">&raquo;</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+
 						</div>
-						<div class="container text-center">
-		<div class="row d-grid justify-content-center">
-			<div class="col">
-				<ul class="pagination pagination-lg">
-
-					<li class="page-item {% if  previous  < 0 %}disabled{% endif %}">
-						<a class="page-link" href="{{ path('app_trick', {'slug' : trick.slug , 'offset' : previous }) }}#comments">&laquo;</a>
-					</li>
-
-					<li class="page-item">
-						<a class="page-link {% if  next  >= maxOffset %}disabled{% endif %}" href="{{ path('app_trick', {'slug' : trick.slug , 'offset' : next }) }}#comments">&raquo;</a>
-					</li>
-				</ul>
-			</div>
-		</div>
 					</div>
-					
-				</div>
 				</div>
 			</div>
+
 		</div>
-		
-	</div>
 	</section>
 {% endblock %}
 

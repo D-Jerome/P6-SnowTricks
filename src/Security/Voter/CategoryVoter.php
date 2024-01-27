@@ -17,7 +17,7 @@ class CategoryVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if (!\in_array($attribute, [self::AUTH,self::EDIT], true)) {
+        if (!\in_array($attribute, [self::AUTH, self::EDIT], true)) {
             return false;
         }
 
@@ -35,8 +35,8 @@ class CategoryVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
-        
-        if ($user->isActive() === false) {
+
+        if (false === $user->isActive()) {
             return false;
         }
 
@@ -45,11 +45,10 @@ class CategoryVoter extends Voter
 
         return match($attribute) {
             self::AUTH   => $this->canAuth($category, $user),
-           
+
             default      => throw new \LogicException('This code should not be reached!')
         };
     }
-
 
     private function canAuth(Category $category, User $user): bool
     {
