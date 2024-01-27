@@ -64,7 +64,7 @@
 					</div>
 					<div id="medias" class="container col-8  d-none d-flex justify-content-around flex-wrap">
 
-						<div id="carousel" class="carousel slide carousel-fade" >
+						<div id="carousel" class="carousel slide carousel-fade">
 							<div class="carousel-indicators">
 								{%  set isFirst = true %}
 								{% for media in medias %}
@@ -88,7 +88,7 @@
 											{% if (media.typeMedia) == (TypeMediaEnumImage) %}
 												<img src="/uploads/{{ media.path }}" class="d-block w-100" alt="">
 											{% else %}
-												{{ media.path|raw }}
+												<div class="col w-100">{{ media.path|raw }}</div>
 											{% endif %}
 										</div>
 										{% set isFirst = false %}
