@@ -8,6 +8,7 @@ use App\Repository\MediaRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 class Media
@@ -30,6 +31,12 @@ class Media
     #[ORM\JoinColumn(nullable: false)]
     private ?Trick $trick = null;
 
+    #[Assert\File(
+        maxSize:'2048k',
+        maxSizeMessage: 'La taille maximale ne doit pas dépassée {{ size }} {{ suffix }}',
+        mimeTypes: ['image/*'],
+        mimeTypesMessage: 'Merci de sélectionner une Image Valide au format(jpg, jpeg, webp, png)',
+    )]
     private ?UploadedFile $file = null;
 
     public function getId(): ?int

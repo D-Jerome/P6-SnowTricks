@@ -10,7 +10,9 @@ use App\Entity\Trick;
 use App\Entity\TypeMedia;
 use App\Entity\User;
 use App\Form\CommentType;
+use App\Form\MediaType;
 use App\Form\TrickType;
+use App\Form\UserAvatarType;
 use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
 use App\Service\FileUploaderService;
@@ -20,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Webmozart\Assert\Assert;
 
 class TrickController extends AbstractController
@@ -27,10 +30,6 @@ class TrickController extends AbstractController
     #[Route('/trick/{slug<((\w+)-){0,}(\w+)>}/show', name: 'app_trick')]
     public function showTrick(string $slug, Trick $trick, TrickRepository $trickRepository, CommentRepository $commentRepository, Request $request, EntityManagerInterface $manager): Response
     {
-        $offset = max(0, $request->query->getInt('offset', 0));
-        $maxOffset = \count($commentRepository->findBy(['trick' => $trick]));
-        $pagedComments = $commentRepository->getCommentPaginator($trick, $offset);
-
         $comments = $trick->getComments();
         $offset = max(0, $request->query->getInt('offset', 0));
         $maxOffset = \count($commentRepository->findAll());
@@ -86,7 +85,7 @@ class TrickController extends AbstractController
 
     #[Route('/trick/{slug<((\w+)-){0,}(\w+)>}/edit', name: 'app_trick_edit')]
     #[Route('/trick/add', name: 'app_trick_add')]
-    public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService): Response
+    public function form(Trick $trick = null, Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploaderService, ValidatorInterface $validator): Response
     {
         if (!$trick) {
             $trick = new Trick();
@@ -101,45 +100,58 @@ class TrickController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($trick->getId()) {
-                $trick->setUpdatedAt(new DateTimeImmutable());
+        if ($form->isSubmitted()) {
+            
+            foreach ($form->getErrors() as $error) {
+                $this->addFlash('danger', $error->getMessage());
             }
 
-            foreach ($trick->getMedias() as $key => $media) {
-                if (TypeMedia::Image === $media->getTypeMedia()) {
-                    if($media->getFile()) {
-                        $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
-                        $media->setDescription($media->getFile()->getClientOriginalName());
-                        $media->setPath($uploadFileName);
-                        $manager->persist($media);
-                    }
-                } else {
-                    Assert::notNull($media->getPath());
+            if($form->isValid()) {
+                if ($trick->getId()) {
+                    $trick->setUpdatedAt(new DateTimeImmutable());
+                }
 
-                    if(preg_match_all('/<iframe[^>]*>(?:.*?)<\/iframe>/', $media->getPath(), $matches)) {
-                        $path = (string) str_replace('autoplay=1', '', $matches[0][0]);
-                        $path = str_replace('position:absolute;', '', $path);
-                        $media->setDescription('video');
-                        $media->setPath($path);
-                        $manager->persist($media);
+                foreach ($trick->getMedias() as $key => $media) {
+                    if(!$media->getId() && (!$media->getFile()) && !$media->getPath()) {
+                        $trick->removeMedia($media);
                     } else {
-                        $this->addFlash('danger', 'le lien de la video ne correspond pas a un lien integré (embed');
+                        if (TypeMedia::Image === $media->getTypeMedia()) {
+                            if($media->getFile()) {
+                                $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
+                                $media->setDescription($media->getFile()->getClientOriginalName());
+                                $media->setPath($uploadFileName);
+                                $manager->persist($media);
+                            } 
+                        } else {
+                            Assert::notNull($media->getPath());
 
-                        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
+                            if(preg_match_all('/<iframe[^>]*>(?:.*?)<\/iframe>/', $media->getPath(), $matches)) {
+                                $path = (string) str_replace('autoplay=1', '', $matches[0][0]);
+                                $path = str_replace('position:absolute;', '', $path);
+                                $media->setDescription('video');
+                                $media->setPath($path);
+                                $manager->persist($media);
+                            } else {
+                                $this->addFlash('danger', 'le lien de la video ne correspond pas a un lien integré (embed)');
+
+                                return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
+                            }
+                        }
                     }
                 }
-            }
-            $manager->persist($trick);
-            $manager->flush();
 
-            return $this->redirectToRoute('app_trick', ['slug' => $trick->getSlug()]);
+                $manager->persist($trick);
+                $manager->flush();
+
+                return $this->redirectToRoute('app_trick', ['slug' => $trick->getSlug()]);
+            }
         }
         // add Media
 
         return $this->render('trick/form.html.twig', [
             'formTrick'        => $form->createView(),
             'trick'            => $trick,
+           
         ]);
     }
 
@@ -157,4 +169,7 @@ class TrickController extends AbstractController
 
         return $this->redirectToRoute('app_home');
     }
+
+   
+
 }

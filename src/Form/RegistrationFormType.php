@@ -33,7 +33,7 @@ class RegistrationFormType extends AbstractType
                 'mapped'      => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'J\'accepte les conditions d\'utilisation du site',
+                        'message' => 'valider les conditions',
                     ]),
                 ],
             ])

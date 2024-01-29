@@ -23,7 +23,7 @@ class UserAvatarType extends AbstractType
                 'mapped'      => false,
                 'constraints' => [
                     new File([
-                        'maxSize'   => '2Mi',
+                        'maxSize'   => '2m',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png',

@@ -34,7 +34,7 @@
         ) }}
 
 	{{ form_widget(formTrick._token) }}
-	{{ form_errors(formTrick) }}
+	{{ form_errors(formTrick.medias) }}
 	<div class="d-flex col-4 gap-2 mx-auto mb-2 flex-wrap justify-content-center">
 		<button type="button" class="btn btn-outline-primary btn-new" data-collection-holder-class="medias">Ajouter une image</button>
 		<button type="button" class="btn btn-outline-dark btn-new-video" data-collection-holder-class="medias">Ajouter une vidéo</button>
@@ -59,7 +59,7 @@
 					<div class="card-header ">{{ field_value(media.typeMedia) }}</div>
 					<div class="card-body ">
 						<span class="d-none">{{ form_row(media.path) }}</span>
-							<span class="ratio ratio-16x9">{{ field_value(media.path)|raw }}</span>
+						<span class="ratio ratio-16x9">{{ field_value(media.path)|raw }}</span>
 						<p class="card-text">
 							<span class="d-none">{{ form_widget(media.typeMedia) }}</span>
 							{{ field_value(media.file) }}
@@ -68,8 +68,6 @@
 				{% endif %}
 			{% endfor %}
 		</ul>
-
-		{{ form_errors(formTrick.medias) }}
 
 
 		<div class="d-grid gap-2 col-10 mx-auto">
@@ -81,6 +79,7 @@
 				{% endif %}
 			</button>
 		</div>
+		
 		{{ form_end(formTrick, {render_rest: false}) }}
 	{% endblock %}
 
@@ -113,6 +112,10 @@ item.appendChild(body);
 const text = document.createElement('p');
 text.classList.add("card-text");
 text.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, collectionHolder.dataset.index);
+text.innerHTML = text.innerHTML.replace('[typeMedia]\" class=\"form-select\"', '[typeMedia]\" class=\"invisible\"');
+text.innerHTML = text.innerHTML.replace('<option value=\"Video\"', '<option value=\"Video\" selected');
+text.innerHTML = text.innerHTML.replace('_file_help\" class=\"form-control\"', '_file_help\"  class=\"invisible\"');
+text.innerHTML = text.innerHTML.replace('_file_help\" class=\"form-text', '_file_help\" class=\"invisible form-text\"');
 body.appendChild(text);
 
 
@@ -144,6 +147,11 @@ item.appendChild(body);
 const text = document.createElement('p');
 text.classList.add("card-text");
 text.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, collectionHolder.dataset.index);
+text.innerHTML = text.innerHTML.replace('[typeMedia]\" class=\"form-select\"', '[typeMedia]\" class=\"invisible\"');
+text.innerHTML = text.innerHTML.replace('<option value=\"Image\"', '<option value=\"Image\" selected');
+text.innerHTML = text.innerHTML.replace('[path]\" class=\"form-control\"', '[path]\" class=\"invisible\"');
+text.innerHTML = text.innerHTML.replace('path\" class=\"form-label\"', 'path\" class=\"invisible\"');
+text.innerHTML = text.innerHTML.replace('</iframe>\" class=\"form-control\"', '</iframe>\" class=\"invisible\"');
 body.appendChild(text);
 
 

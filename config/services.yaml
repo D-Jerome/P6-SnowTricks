@@ -5,7 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     uploads_directory: '%kernel.project_dir%/public/uploads'
-    thumbnail_directory: '%kernel.project_dir%/public/uploads/thumbnail'
+
 
 services:
     # default configuration for services in *this* file
@@ -17,10 +17,6 @@ services:
         autowire: true
         arguments:
             $targetDirectory: '%uploads_directory%'
-
-    App\Service\ThumbnailService:
-        arguments:
-            $targetDirectory: '%thumbnail_directory%'
 
     App\Controller\UserProfileController:
         autowire: true

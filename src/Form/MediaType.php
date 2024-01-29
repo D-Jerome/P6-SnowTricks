@@ -10,35 +10,30 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Image;
 
 class MediaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // $mediaType = $options['mediaType'];
-
-        // if ('Image' === $mediaType || !$mediaType) {
         $builder
             ->add('typeMedia', EnumType::class, [
                 'label'       => false,
                 'class'       => TypeMedia::class,
-                'required'    => false,
-
-                // 'mapped'      => false,
             ])
 
             ->add('file', FileType::class, [
-                'label'       => false,
-                'required'    => false,
-                'attr'        => [
-                    'placeholder' => 'Ajouter un Media',
+                'label'             => false,
+                'required'          => false,
+                'error_bubbling'    => false,
+                'attr'              => [
+                    'accept' => 'image/*',
                 ],
-                'constraints' => [
-                    new File([
+                'help'              => 'Taille maximale du fichier 2Mo',
+                'constraints'       => [
+                    new Image([
                         'maxSize'        => '2048k',
                         'maxSizeMessage' => 'La taille maximale ne doit pas dépassée 2Mo',
                         'mimeTypes'      => [
@@ -48,18 +43,14 @@ class MediaType extends AbstractType
                     ])],
             ])
             ->add('path', TextType::class, [
+                'required'          => false,
+                'label'             => 'Copier le lien "embed" ou "integrer" de la video ci-dessous',
+                'attr'              => [
+                    'placeholder' => '<iframe ...>...</iframe>',
+                ],
             ])
         ;
     }
-
-    // if ('Video' === $mediaType) {
-    //     $builder
-
-    //         ->add('path', UrlType::class, [
-    //             'mapped'      => false,
-    //         ])
-    //     ;
-    // }
 
     public function configureOptions(OptionsResolver $resolver): void
     {

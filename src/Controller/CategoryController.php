@@ -40,14 +40,14 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/category/add', name: 'app_category_add')]
+
     #[Route('/category/{id<(\d+)>}/edit', name: 'app_category_edit')]
     public function form(Category $category = null, Request $request, EntityManagerInterface $manager): Response
     {
-        $this->denyAccessUnlessGranted('CATEGORY_EDIT', $category);
         if (!$category) {
             $category = new Category();
         }
-
+        $this->denyAccessUnlessGranted('CATEGORY_AUTH', $category);
         $form = $this->createForm(CategoryType::class, $category);
 
         $form->handleRequest($request);

@@ -7,7 +7,6 @@ namespace App\EntityListener;
 use App\Entity\Trick;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[AsEntityListener(event: Events::prePersist, entity: Trick::class)]
@@ -19,12 +18,12 @@ class TrickEntityListener
     ) {
     }
 
-    public function prePersist(Trick $trick, LifecycleEventArgs $event): void
+    public function prePersist(Trick $trick): void
     {
         $trick->computeSlug($this->slugger);
     }
 
-    public function preUpdate(Trick $trick, LifecycleEventArgs $event): void
+    public function preUpdate(Trick $trick): void
     {
         $trick->computeSlug($this->slugger);
     }

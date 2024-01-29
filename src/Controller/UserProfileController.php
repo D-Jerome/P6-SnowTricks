@@ -91,4 +91,35 @@ class UserProfileController extends AbstractController
             'formAvatar'   => $formAvatar->createView(),
         ]);
     }
+
+    #[Route('/usertest', name: 'app_user_test')]
+    public function show(Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploader): Response
+    {
+
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
+
+        $formAvatar = $this->createForm(UserAvatarType::class);
+
+        $formAvatar->handleRequest($request);
+        if ($formAvatar->isSubmitted() && $formAvatar->isValid()) {
+            /**
+             * @var UploadedFile $avatarFile
+             */
+            $avatarFile = $formAvatar->get('avatar')->getData();
+
+            $avatarFileName = $fileUploader->upload($avatarFile, '');
+            $user->setAvatar($avatarFileName);
+
+            $manager->persist($user);
+            $manager->flush();
+        }
+
+        return $this->render('user_profile/test.html.twig', [
+            'user'         => $user,
+            'formAvatar'   => $formAvatar->createView(),
+        ]);
+    }
 }
