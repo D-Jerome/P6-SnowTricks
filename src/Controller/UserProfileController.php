@@ -95,7 +95,6 @@ class UserProfileController extends AbstractController
     #[Route('/usertest', name: 'app_user_test')]
     public function show(Request $request, EntityManagerInterface $manager, FileUploaderService $fileUploader): Response
     {
-
         /**
          * @var User $user
          */

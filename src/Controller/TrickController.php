@@ -10,15 +10,16 @@ use App\Entity\Trick;
 use App\Entity\TypeMedia;
 use App\Entity\User;
 use App\Form\CommentType;
-use App\Form\MediaType;
 use App\Form\TrickType;
-use App\Form\UserAvatarType;
 use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
+use App\Service\FileCleaner;
 use App\Service\FileUploaderService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -66,6 +67,11 @@ class TrickController extends AbstractController
 
             $manager->flush();
 
+            $this->addFlash(
+                'success',
+                'Votre commentaire a bien été enregistré !'
+            );
+
             return $this->redirectToRoute('app_trick', ['slug' => $trick->getSlug()]);
         }
 
@@ -101,8 +107,8 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            
             foreach ($form->getErrors() as $error) {
+                Assert::isInstanceOf($error, FormError::class);
                 $this->addFlash('danger', $error->getMessage());
             }
 
@@ -121,7 +127,7 @@ class TrickController extends AbstractController
                                 $media->setDescription($media->getFile()->getClientOriginalName());
                                 $media->setPath($uploadFileName);
                                 $manager->persist($media);
-                            } 
+                            }
                         } else {
                             Assert::notNull($media->getPath());
 
@@ -143,6 +149,11 @@ class TrickController extends AbstractController
                 $manager->persist($trick);
                 $manager->flush();
 
+                $this->addFlash(
+                    'success',
+                    'Le trick <strong>' . $trick->getName() . '</strong> a bien été enregistré !'
+                );
+
                 return $this->redirectToRoute('app_trick', ['slug' => $trick->getSlug()]);
             }
         }
@@ -151,7 +162,6 @@ class TrickController extends AbstractController
         return $this->render('trick/form.html.twig', [
             'formTrick'        => $form->createView(),
             'trick'            => $trick,
-           
         ]);
     }
 
@@ -159,6 +169,15 @@ class TrickController extends AbstractController
     public function deleteTrick(Trick $trick, EntityManagerInterface $manager): Response
     {
         $this->denyAccessUnlessGranted('TRICK_DELETE', $trick);
+        $fileSystem = new Filesystem();
+        foreach ( $trick->getMedias() as $media){
+            if ($media->getTypeMedia() === Typemedia::Image){
+
+                $fileSystem->remove("uploads/".$media->getPath());
+            }
+            
+        }
+        
         $manager->remove($trick);
         $manager->flush();
 
@@ -169,7 +188,4 @@ class TrickController extends AbstractController
 
         return $this->redirectToRoute('app_home');
     }
-
-   
-
 }

@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(
-    'slug',
+    'name',
     message: 'cette figure existe déjà',
 )]
 class Trick
@@ -27,21 +27,24 @@ class Trick
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotNull()]
     #[Assert\Length(min: 5, minMessage:'Nom de la figure trop court')]
-
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique : true)]
-    private ?string $slug = null;
+     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotNull()]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Assert\NotNull()]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'tricks')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull()]
     private ?Category $category = null;
 
     /**

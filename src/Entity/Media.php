@@ -25,10 +25,12 @@ class Media
     private ?string $path = null;
 
     #[ORM\Column(enumType: TypeMedia::class)]
+    #[Assert\NotNull()]
     private ?TypeMedia $typeMedia = null;
 
     #[ORM\ManyToOne(inversedBy: 'medias')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull()]
     private ?Trick $trick = null;
 
     #[Assert\File(
