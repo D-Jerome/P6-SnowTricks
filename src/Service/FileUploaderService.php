@@ -18,7 +18,7 @@ class FileUploaderService
     ) {
     }
 
-    public function upload(UploadedFile $file, ?string $folder = ''): string
+    public function upload(UploadedFile $file, ?string $folder = ''): ?string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), \PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
@@ -29,7 +29,7 @@ class FileUploaderService
         try {
             $file->move("{$path}/", $fileName);
         } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
+            $fileName =  null;
         }
 
         return $fileName;

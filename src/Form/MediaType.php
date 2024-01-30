@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Image;
 
 class MediaType extends AbstractType
@@ -25,6 +26,7 @@ class MediaType extends AbstractType
             ])
 
             ->add('file', FileType::class, [
+                'mapped' => false,
                 'label'             => false,
                 'required'          => false,
                 'error_bubbling'    => false,
@@ -33,8 +35,8 @@ class MediaType extends AbstractType
                 ],
                 'help'              => 'Taille maximale du fichier 2Mo',
                 'constraints'       => [
-                    new Image([
-                        'maxSize'        => '2048k',
+                    new File([
+                        'maxSize'        => 2048000,
                         'maxSizeMessage' => 'La taille maximale ne doit pas dépassée 2Mo',
                         'mimeTypes'      => [
                             'image/*',

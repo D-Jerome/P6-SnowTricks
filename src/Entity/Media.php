@@ -34,10 +34,19 @@ class Media
     private ?Trick $trick = null;
 
     #[Assert\File(
-        maxSize:'2048k',
-        maxSizeMessage: 'La taille maximale ne doit pas dépassée {{ size }} {{ suffix }}',
+        maxSize: 2048000,
+        maxSizeMessage: 'La taille maximale ne doit pas dépassée',
         mimeTypes: ['image/*'],
         mimeTypesMessage: 'Merci de sélectionner une Image Valide au format(jpg, jpeg, webp, png)',
+    )]
+    #[Assert\Image(
+        maxWidth: 1920,
+        maxWidthMessage: 'Les dimensions de l\'image ne doivent pas dépassée 1920*1080',
+        allowPortrait: false,
+        allowPortraitMessage: 'Uniquement des images au format paysage',
+        detectCorrupted: true,
+        maxHeight: 1080,
+        maxHeightMessage: 'Les dimensions de l\'image ne doivent pas dépassée 1920*1080',
     )]
     private ?UploadedFile $file = null;
 

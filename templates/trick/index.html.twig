@@ -13,12 +13,13 @@
 				<h1 class="position-absolute top-50 start-50 translate-middle  text-secondary rounded  p-2 shadow-lg text-center  ">{{ trick.name }}</h1>
 				{% if app.user == trick.user %}
 					<div class="position-absolute top-0 end-0 mt-1 mx-1">
-						<a href="{{ path('app_trick_delete', {'slug' : trick.slug }) }}" class="btn btn-danger ">
+						<a href="#eraseTrick" data-bs-toggle="modal" type="submit" data-trick="{{ path('app_trick_delete', {'slug' : trick.slug }) }}" class="btn btn-danger trick-delete">
 							<i class="fa-regular fa-trash-can"></i>
 						</a>
 						<a href="{{ path('app_trick_edit', {'slug' : trick.slug }) }}" class="btn btn-info">
 							<i class="fa-regular fa-pen-to-square"></i>
 						</a>
+
 					</div>
 				{% endif %}
 			</div>
@@ -186,6 +187,25 @@
 			</div>
 
 		</div>
+		<div class="modal fade" id="eraseTrick" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">
+							<span class="badge bg-danger">WARNING</span>
+						</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<p>Êtes-vous certain de vouloir supprimer ce trick ?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Oh non !</button>
+						<a href="{{ path('app_trick_delete', {'slug' : trick.slug }) }}" type="submit" class="btn btn-primary">Oui !</a>
+					</div>
+				</div>
+			</div>
+		</div>
 	</section>
 {% endblock %}
 
@@ -196,5 +216,8 @@
 var element = document.getElementById("medias");
 element.classList.toggle("d-none");
 }
-	</script>
-{% endblock %}
+
+
+</script>
+			{% endblock %}
+
