@@ -89,7 +89,7 @@
 											{% if (media.typeMedia) == (TypeMediaEnumImage) %}
 												<img src="/uploads/{{ media.path }}" class="d-block w-100" alt="">
 											{% else %}
-												<div class="col w-100">{{ media.path|raw }}</div>
+												<div class="container">{{ media.path|raw }}</div>
 											{% endif %}
 										</div>
 										{% set isFirst = false %}

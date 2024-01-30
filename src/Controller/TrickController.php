@@ -109,7 +109,7 @@ class TrickController extends AbstractController
                 Assert::isInstanceOf($error, FormError::class);
                 $this->addFlash('danger', $error->getMessage());
             }
-        
+
             if($form->isValid()) {
                 if ($trick->getId()) {
                     $trick->setUpdatedAt(new DateTimeImmutable());
@@ -137,12 +137,22 @@ class TrickController extends AbstractController
                             if(preg_match_all('/<iframe[^>]*>(?:.*?)<\/iframe>/', $media->getPath(), $matches)) {
                                 $path = (string) str_replace('autoplay=1', '', $matches[0][0]);
                                 $path = str_replace('position:absolute;', '', $path);
+                                $expPath = explode(' ', $path);
+                                foreach($expPath as $k => $detail) {
+                                    if ('class=' === substr($detail, 0, 6)) {
+                                        $expPath[$k] = '';
+                                    }
+                                    if (('width=' === substr($detail, 0, 6)) || ('height=' === substr($detail, 0, 7))) {
+                                        $expPath[$k] = '';
+                                    }
+                                }
+                                $path = implode(' ', $expPath);
+                                $path = str_replace('<iframe ', '<iframe class="responsive-iframe" width="500px" height="280px"', $path);
                                 $media->setDescription('video');
                                 $media->setPath($path);
                                 $manager->persist($media);
                             } else {
                                 $this->addFlash('danger', 'le lien de la video ne correspond pas a un lien integré (embed)');
-
                                 return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
                             }
                         }
