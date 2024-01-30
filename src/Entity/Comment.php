@@ -27,12 +27,12 @@ class Comment
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull()]
+
     private ?Trick $trick = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull()]
+
     private ?User $user = null;
 
     /**

@@ -29,7 +29,7 @@ class FileUploaderService
         try {
             $file->move("{$path}/", $fileName);
         } catch (FileException $e) {
-            $fileName =  null;
+            $fileName = null;
         }
 
         return $fileName;

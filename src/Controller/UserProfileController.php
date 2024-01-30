@@ -78,6 +78,7 @@ class UserProfileController extends AbstractController
             $avatarFile = $formAvatar->get('avatar')->getData();
 
             $avatarFileName = $fileUploader->upload($avatarFile, '');
+            Assert::notNull($avatarFileName);
             $user->setAvatar($avatarFileName);
 
             $manager->persist($user);
@@ -110,6 +111,7 @@ class UserProfileController extends AbstractController
             $avatarFile = $formAvatar->get('avatar')->getData();
 
             $avatarFileName = $fileUploader->upload($avatarFile, '');
+            Assert::notNull($avatarFileName);
             $user->setAvatar($avatarFileName);
 
             $manager->persist($user);

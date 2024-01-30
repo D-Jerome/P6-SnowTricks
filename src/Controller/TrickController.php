@@ -49,11 +49,11 @@ class TrickController extends AbstractController
         if (!$mainPicture) {
             $mainPicture = 'default/MainPics.jpg';
         }
-        $countMedia = \count($medias);
+        // $countMedia = \count($medias);
 
-        foreach ($comments as $comment) {
-            $user = $manager->getRepository(User::class)->find($comment->getUser());
-        }
+        // foreach ($comments as $comment) {
+        //     $user = $manager->getRepository(User::class)->find($comment->getUser());
+        // }
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
@@ -153,6 +153,7 @@ class TrickController extends AbstractController
                                 $manager->persist($media);
                             } else {
                                 $this->addFlash('danger', 'le lien de la video ne correspond pas a un lien integré (embed)');
+
                                 return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
                             }
                         }

@@ -7,7 +7,7 @@
 {% block body %}
 	<div class="row justify-content-center ">
 		<div class="card mt-1 ">
-			<div class=" position-relative">
+			<div class=" position-relative mt-1">
 				<img class=" card-img-top img-fluid w-100 " src="/uploads/{{ mainPicture }}" alt="{{trick.name}} picture ">
 				<h1 class="position-absolute top-50 start-50 translate-middle bg-primary text-dark  bg-gradient rounded opacity-75 p-2 shadow-lg text-center border border-secondary ">{{ trick.name }}</h1>
 				<h1 class="position-absolute top-50 start-50 translate-middle  text-secondary rounded  p-2 shadow-lg text-center  ">{{ trick.name }}</h1>
@@ -143,8 +143,7 @@
 					<div class="card rounded shadow-lg text-left p-5 mb-5 ">
 						<div class="entry-comments">
 							<h6 class="mb-5">{{ trick.comments | length }}
-								Commentaire
-								{%if ( trick.comments | length ) > 1 %}s{%endif%}</h6>
+								{%if ( trick.comments | length ) > 1 %}Commentaires{% else %}Commentaire{%endif%}</h6>
 								<ul class="entry-comments-list list-unstyled">
 									{% for comment in comments %}
 										<li>
@@ -216,8 +215,5 @@
 var element = document.getElementById("medias");
 element.classList.toggle("d-none");
 }
-
-
-</script>
-			{% endblock %}
-
+	</script>
+{% endblock %}

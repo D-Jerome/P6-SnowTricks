@@ -33,6 +33,19 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
+        $categories = ['Grabs', 'Rotations', 'Flips', 'Slides'];
+
+        $figures = ['Melancholie', 'Mute', 'Style week', '540 rotation', 'Indy', 'Stalefish', 'Japan Air', 'Nose grab', '180 rotation', 'Sad', 'Tail grab', '900 rotation', 'Seat Belt', '360 rotation', 'Japan', '720 rotation', 'Backside Air', 'Truck driver', 'Big foot', 'Slide', 'Rocket Air', 'Flip', 'Method Air'];
+
+        $videos = [
+            '<iframe width="560" height="315" src="https://www.youtube.com/embed/geB_HeU6m0k?si=f32pPPS-o5Zn_8y4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>',
+            '<iframe width="560" height="315" src="https://www.youtube.com/embed/_Pq70pqJxKI?si=heLyZdbd_i-NPSkZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>',
+            '<iframe width="560" height="315" src="https://www.youtube.com/embed/UGdif-dwu-8?si=rQ-er_F0-IItfWvj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>',
+            '<iframe width="560" height="315" src="https://www.youtube.com/embed/9a4C8NcbmME?si=Ua9WIGJWFXLbXzAN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>',
+            '<iframe width="560" height="315" src="https://www.youtube.com/embed/RmoTk02rIxE?si=HHOuAtakTGMhWYBq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>',
+            '<iframe width="560" height="315" src="https://www.youtube.com/embed/yKovI9hMjBs?si=khyHLZ36rpJgwO5Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>',
+        ];
+
         // Admin
         $admin = new User();
         $admin->setEmail('admin@snowtricks.fr')
@@ -49,9 +62,9 @@ class AppFixtures extends Fixture
         $this->em->persist($admin);
         $this->em->flush();
 
-        for ($g = 0; $g < 5; ++$g) {
+        foreach ($categories as $cat) {
             $category = new Category();
-            $category->setName($faker->sentence(3));
+            $category->setName($cat);
             $this->em->persist($category);
 
             for ($i = 0; $i < 2; ++$i) {
@@ -83,7 +96,7 @@ class AppFixtures extends Fixture
                         $this->em->persist($comment);
                     }
 
-                    for($k = 0; $k < random_int(1, 3); ++$k) {
+                    for($k = 0; $k < random_int(0, 1); ++$k) {
                         $media = new Media();
                         $media->setDescription($faker->sentence(4, true))
                             ->setPath('default/DefaultMedia.png')
@@ -92,8 +105,44 @@ class AppFixtures extends Fixture
                         ;
                         $this->em->persist($media);
                     }
+                    for($k = 0; $k < random_int(0, 1); ++$k) {
+                        $media = new Media();
+                        $media->setDescription($faker->sentence(4, true))
+                            ->setPath('default/Trick-Japan-Grab.jpg')
+                            ->setTypeMedia(TypeMedia::Image)
+                            ->setTrick($trick)
+                        ;
+                        $this->em->persist($media);
+                    }
+                    for($k = 0; $k < random_int(0, 1); ++$k) {
+                        $media = new Media();
+                        $media->setDescription($faker->sentence(4, true))
+                            ->setPath('default/Trick-Nose-Grab.jpg')
+                            ->setTypeMedia(TypeMedia::Image)
+                            ->setTrick($trick)
+                        ;
+                        $this->em->persist($media);
+                    }
+                    for($k = 0; $k < random_int(0, 1); ++$k) {
+                        $media = new Media();
+                        $media->setDescription($faker->sentence(4, true))
+                            ->setPath('default/Trick-suitcase-Grab.jpg')
+                            ->setTypeMedia(TypeMedia::Image)
+                            ->setTrick($trick)
+                        ;
+                        $this->em->persist($media);
+                    }
+                    for($k = 0; $k < random_int(0, 1); ++$k) {
+                        $media = new Media();
+                        $media->setDescription($faker->sentence(4, true))
+                            ->setPath('default/Trick-Tail-Grab.jpg')
+                            ->setTypeMedia(TypeMedia::Image)
+                            ->setTrick($trick)
+                        ;
+                        $this->em->persist($media);
+                    }
 
-                    for($k = 0; $k < random_int(1, 3); ++$k) {
+                    for($k = 0; $k < random_int(0, 1); ++$k) {
                         $media = new Media();
                         $media->setDescription($faker->sentence(3, true))
                             ->setPath('default/DefaultMedia2.webp')
@@ -105,8 +154,9 @@ class AppFixtures extends Fixture
 
                     for($k = 0; $k < random_int(0, 2); ++$k) {
                         $media = new Media();
+                        $path = $videos[array_rand($videos)];
                         $media->setDescription($faker->sentence(3, true))
-                            ->setPath('https://www.youtube.com/embed/ivO_fl0HrXs?si=S5MZuQ1NHOUZEend')
+                            ->setPath($path)
                             ->setTypeMedia(TypeMedia::Video)
                             ->setTrick($trick)
                         ;

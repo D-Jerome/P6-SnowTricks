@@ -32,7 +32,7 @@ class Trick
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique : true)]
-     private ?string $slug = null;
+    private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotNull()]
