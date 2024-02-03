@@ -70,15 +70,16 @@
 		</ul>
 
 
-		<div class="d-grid gap-2 col-10 mx-auto">
-			<button class="btn btn-primary ">
+		{# <div class="d-grid gap-2 col-10 mx-auto">
+			<button class="btn btn-primary " type="submit">
 				{% if trick.id %}
 					Modifier votre Trick
 				{% else %}
 					Créer votre Trick
 				{% endif %}
 			</button>
-		</div>
+		</div> #}
+		{{ form_row(formTrick.submit)}}
 
 		{{ form_end(formTrick, {render_rest: false}) }}
 	{% endblock %}

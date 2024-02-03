@@ -42,7 +42,7 @@ class Trick
     #[Assert\NotNull()]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tricks')]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'tricks')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull()]
     private ?Category $category = null;
@@ -54,7 +54,7 @@ class Trick
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
-    #[ORM\ManyToOne(inversedBy: 'tricks')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tricks')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
