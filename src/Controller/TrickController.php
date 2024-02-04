@@ -99,83 +99,92 @@ class TrickController extends AbstractController
             $user = $this->getUser();
             $trick->setUser($user);
         }
+
         $this->denyAccessUnlessGranted('TRICK_AUTH', $trick);
         $form = $this->createForm(TrickType::class, $trick);
+        try {
+            $form->handleRequest($request);
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            foreach ($form->getErrors() as $error) {
-                Assert::isInstanceOf($error, FormError::class);
-                $this->addFlash('danger', $error->getMessage());
-            }
-
-            if($form->isValid()) {
-                if ($trick->getId()) {
-                    $trick->setUpdatedAt(new DateTimeImmutable());
+            if ($form->isSubmitted()) {
+                foreach ($form->getErrors() as $error) {
+                    Assert::isInstanceOf($error, FormError::class);
+                    $this->addFlash('danger', $error->getMessage());
                 }
 
-                foreach ($trick->getMedias() as $key => $media) {
-                    if(!$media->getId() && (!$media->getFile()) && !$media->getPath()) {
-                        $trick->removeMedia($media);
-                    } else {
-                        if (TypeMedia::Image === $media->getTypeMedia()) {
-                            if($media->getFile()) {
-                                $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
-                                if (!$uploadFileName) {
-                                    $this->addFlash('danger', 'Un problème est survenu....');
+                if($form->isValid()) {
+                    if ($trick->getId()) {
+                        $trick->setUpdatedAt(new DateTimeImmutable());
+                    }
+
+                    foreach ($trick->getMedias() as $key => $media) {
+                        if(!$media->getId() && (!$media->getFile()) && !$media->getPath()) {
+                            $trick->removeMedia($media);
+                        } else {
+                            if (TypeMedia::Image === $media->getTypeMedia()) {
+                                if($media->getFile()) {
+                                    $uploadFileName = $fileUploaderService->upload($media->getFile(), '');
+                                    if (!$uploadFileName) {
+                                        $this->addFlash('danger', 'Un problème est survenu....');
+
+                                        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
+                                    }
+                                    $media->setDescription($media->getFile()->getClientOriginalName());
+                                    $media->setPath($uploadFileName);
+                                    $manager->persist($media);
+                                }
+                            } else {
+                                Assert::notNull($media->getPath());
+
+                                if(preg_match_all('/<iframe[^>]*>(?:.*?)<\/iframe>/', $media->getPath(), $matches)) {
+                                    $path = (string) str_replace('autoplay=1', '', $matches[0][0]);
+                                    $path = str_replace('position:absolute;', '', $path);
+                                    $expPath = explode(' ', $path);
+                                    foreach($expPath as $k => $detail) {
+                                        if ('class=' === substr($detail, 0, 6)) {
+                                            $expPath[$k] = '';
+                                        }
+                                        if (('width=' === substr($detail, 0, 6)) || ('height=' === substr($detail, 0, 7))) {
+                                            $expPath[$k] = '';
+                                        }
+                                    }
+                                    $path = implode(' ', $expPath);
+                                    $path = str_replace('<iframe ', '<iframe class="responsive-iframe" width="500px" height="280px"', $path);
+                                    $media->setDescription('video');
+                                    $media->setPath($path);
+                                    $manager->persist($media);
+                                } else {
+                                    $this->addFlash('danger', 'le lien de la video ne correspond pas a un lien integré (embed)');
 
                                     return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
                                 }
-                                $media->setDescription($media->getFile()->getClientOriginalName());
-                                $media->setPath($uploadFileName);
-                                $manager->persist($media);
-                            }
-                        } else {
-                            Assert::notNull($media->getPath());
-
-                            if(preg_match_all('/<iframe[^>]*>(?:.*?)<\/iframe>/', $media->getPath(), $matches)) {
-                                $path = (string) str_replace('autoplay=1', '', $matches[0][0]);
-                                $path = str_replace('position:absolute;', '', $path);
-                                $expPath = explode(' ', $path);
-                                foreach($expPath as $k => $detail) {
-                                    if ('class=' === substr($detail, 0, 6)) {
-                                        $expPath[$k] = '';
-                                    }
-                                    if (('width=' === substr($detail, 0, 6)) || ('height=' === substr($detail, 0, 7))) {
-                                        $expPath[$k] = '';
-                                    }
-                                }
-                                $path = implode(' ', $expPath);
-                                $path = str_replace('<iframe ', '<iframe class="responsive-iframe" width="500px" height="280px"', $path);
-                                $media->setDescription('video');
-                                $media->setPath($path);
-                                $manager->persist($media);
-                            } else {
-                                $this->addFlash('danger', 'le lien de la video ne correspond pas a un lien integré (embed)');
-
-                                return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
                             }
                         }
                     }
+
+                    $manager->persist($trick);
+                    $manager->flush();
+
+                    $this->addFlash(
+                        'success',
+                        'Le trick <strong>'.$trick->getName().'</strong> a bien été enregistré !'
+                    );
+
+                    return $this->redirectToRoute('app_trick', ['slug' => $trick->getSlug()]);
                 }
-
-                $manager->persist($trick);
-                $manager->flush();
-
-                $this->addFlash(
-                    'success',
-                    'Le trick <strong>'.$trick->getName().'</strong> a bien été enregistré !'
-                );
-
-                return $this->redirectToRoute('app_trick', ['slug' => $trick->getSlug()]);
             }
-        }
 
-        return $this->render('trick/form.html.twig', [
-            'formTrick'        => $form->createView(),
-            'trick'            => $trick,
-        ]);
+            return $this->render('trick/form.html.twig', [
+                'formTrick'        => $form->createView(),
+                'trick'            => $trick,
+            ]);
+        } catch (\Exception $e) {
+            $this->addFlash('danger', 'Une erreur s\'est produite....');
+
+            return $this->render('trick/form.html.twig', [
+                'formTrick'        => $form->createView(),
+                'trick'            => $trick,
+            ]);
+        }
     }
 
     #[Route('/trick/{slug<((\w+)-){0,}(\w+)>}/delete', name: 'app_trick_delete')]

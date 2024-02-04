@@ -49,19 +49,27 @@ class CategoryController extends AbstractController
         }
         $this->denyAccessUnlessGranted('CATEGORY_AUTH', $category);
         $form = $this->createForm(CategoryType::class, $category);
+        try {
+            $form->handleRequest($request);
 
-        $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $manager->persist($category);
+                $manager->flush();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $manager->persist($category);
-            $manager->flush();
+                return $this->redirectToRoute('app_categories');
+            }
 
-            return $this->redirectToRoute('app_categories');
+            return $this->render('category/form.html.twig', [
+                'formCategory'            => $form->createView(),
+                'category'                => $category,
+            ]);
+        } catch (\Exception $e) {
+            $this->addFlash('danger', 'Une erreur s\'est produite....');
+
+            return $this->render('trick/form.html.twig', [
+                'formCategory'            => $form->createView(),
+                'category'                => $category,
+            ]);
         }
-
-        return $this->render('category/form.html.twig', [
-            'formCategory'            => $form->createView(),
-            'category'                => $category,
-        ]);
     }
 }
