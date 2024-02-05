@@ -54,13 +54,17 @@ class TrickController extends AbstractController
         // foreach ($comments as $comment) {
         //     $user = $manager->getRepository(User::class)->find($comment->getUser());
         // }
+       
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            Assert::isInstanceOf($user, User::class);
+            
             $comment->setTrick($trick);
-            $comment->setUser($trick->getUser());
+            $comment->setUser($user);
             $manager->persist($comment);
 
             $manager->flush();
